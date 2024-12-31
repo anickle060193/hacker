@@ -39,6 +39,7 @@ export const Coder: React.FC<CellProps> = ({ ...cellProps }) => {
         })}
         spellCheck={false}
         value={code.slice(0, character)}
+        onChange={(e) => e.preventDefault()}
         onKeyDown={(e) => {
           e.preventDefault();
           e.stopPropagation();
