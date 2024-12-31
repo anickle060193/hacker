@@ -16,11 +16,16 @@ export const DashboardScreen: React.FC = () => {
         gap: 10,
       }}
     >
-      <Graph algorithm="sin" />
-      <Graph algorithm="random" />
-      <Graph algorithm="smooth" />
+      <Graph variant="bar" algorithm="sin" />
+      <Graph variant="pointy" algorithm="sin" />
       <Console source="wikimedia" />
+
+      <Graph variant="bar" algorithm="random" />
+      <Graph variant="pointy" algorithm="random" />
       <Console source="blockchain" />
+
+      <Graph variant="bar" algorithm="smooth" />
+      <Graph variant="pointy" algorithm="smooth" />
     </div>
   );
 };

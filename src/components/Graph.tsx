@@ -5,10 +5,11 @@ import { Cell } from "./Cell";
 import { useInterval } from "../hooks/useInterval";
 
 import { randomBetween } from "../utils/random";
+import { assertNever } from "../utils";
 
 interface Props {
   count?: number;
-  variant?: "bar" | "smooth" | "pointy";
+  variant?: "bar" | "pointy";
   algorithm?: "random" | "smooth" | "sin";
 }
 
@@ -54,7 +55,7 @@ const ALGORITHMS: Record<
     return Array.from({ length: count }, () => Math.random());
   },
   sin: (count) => {
-    const start = 2 * Math.PI * Math.random();
+    const start = Math.PI * Math.random();
     const range = Math.PI * 2.8;
 
     return Array.from(
@@ -105,8 +106,39 @@ export const Graph: React.FC<Props> = ({
         ))}
       </div>
     );
+  } else if (variant === "pointy") {
+    const path = heights
+      .map(
+        (h, i) =>
+          (i === 0 ? "M" : "L") +
+          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
+          `${(i / (heights.length - 1)) * 100},${h * 100}`
+      )
+      .join(" ");
+    content = (
+      <svg
+        viewBox="0 0 100 100"
+        preserveAspectRatio="none"
+        css={(theme) => ({
+          width: "100%",
+          height: "100%",
+          stroke: theme.colors.primary,
+        })}
+      >
+        <path
+          css={{
+            transition: "2s ease-in-out",
+          }}
+          style={
+            {
+              d: `path( "${path}" )`,
+            } as React.CSSProperties
+          }
+        />
+      </svg>
+    );
   } else {
-    content = <div />;
+    assertNever(variant);
   }
 
   return <Cell>{content}</Cell>;
