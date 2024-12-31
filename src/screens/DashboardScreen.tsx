@@ -3,6 +3,7 @@ import React from "react";
 import { Graph } from "../components/Graph";
 import { Console } from "../components/Console";
 import { Coder } from "../components/Coder";
+import { Map } from "../components/Map";
 
 export const DashboardScreen: React.FC = () => {
   return (
@@ -25,6 +26,8 @@ export const DashboardScreen: React.FC = () => {
 
       <Graph variant="bar" algorithm="smooth" />
       <Graph variant="pointy" algorithm="smooth" />
+
+      <Map />
 
       <Coder css={{ gridColumn: "span 2" }} />
     </div>
