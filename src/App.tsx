@@ -1,7 +1,18 @@
 import React from "react";
+import { Theme, ThemeProvider } from "@emotion/react";
 
-import { Graph } from "./components/Graph";
+import { DashboardScreen } from "./screens/DashboardScreen";
+
+const theme: Theme = {
+  colors: {
+    primary: "var( --primary-color )",
+  },
+};
 
 export const App: React.FC = () => {
-  return <Graph />;
+  return (
+    <ThemeProvider theme={theme}>
+      <DashboardScreen />
+    </ThemeProvider>
+  );
 };
