@@ -1,13 +1,13 @@
 import React from "react";
 
-import { Cell } from "./Cell";
+import { Cell, CellProps } from "./Cell";
 
 import { useRandomInterval } from "../hooks/useRandomInterval";
 
 import { randomBetween } from "../utils/random";
 import { assertNever } from "../utils";
 
-interface Props {
+interface Props extends CellProps {
   count?: number;
   variant?: "bar" | "pointy";
   algorithm?: "random" | "smooth" | "sin";
@@ -69,6 +69,7 @@ export const Graph: React.FC<Props> = ({
   count = 32,
   variant = "bar",
   algorithm = "random",
+  ...cellProps
 }) => {
   const [heights, setHeights] = React.useState<number[]>(() =>
     ALGORITHMS[algorithm](count)
@@ -142,5 +143,5 @@ export const Graph: React.FC<Props> = ({
     assertNever(variant);
   }
 
-  return <Cell>{content}</Cell>;
+  return <Cell {...cellProps}>{content}</Cell>;
 };

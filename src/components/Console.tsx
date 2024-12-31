@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Cell } from "./Cell";
+import { Cell, CellProps } from "./Cell";
 
 import { assertNever } from "../utils";
 import {
@@ -14,11 +14,14 @@ interface Datum {
   text: string;
 }
 
-interface Props {
+interface Props extends CellProps {
   source?: "wikimedia" | "blockchain";
 }
 
-export const Console: React.FC<Props> = ({ source = "wikimedia" }) => {
+export const Console: React.FC<Props> = ({
+  source = "wikimedia",
+  ...cellProps
+}) => {
   const [data, setData] = React.useState<Datum[]>([]);
 
   const appendData = React.useCallback((message: string) => {
@@ -105,7 +108,7 @@ export const Console: React.FC<Props> = ({ source = "wikimedia" }) => {
   }, [source, appendData]);
 
   return (
-    <Cell>
+    <Cell {...cellProps}>
       <div
         css={{
           width: "100%",

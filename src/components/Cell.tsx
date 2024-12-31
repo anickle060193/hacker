@@ -1,12 +1,17 @@
 import React from "react";
 
-interface Props {
+export interface CellProps {
+  className?: string;
+}
+
+interface Props extends CellProps {
   children?: React.ReactNode;
 }
 
-export const Cell: React.FC<Props> = ({ children }) => {
+export const Cell: React.FC<Props> = ({ className, children }) => {
   return (
     <div
+      className={className}
       css={(theme) => ({
         borderWidth: 3,
         borderStyle: "solid",
