@@ -17,7 +17,7 @@ export const DashboardScreen: React.FC = () => {
       }}
     >
       <Graph variant="bar" algorithm="sin" />
-      <Graph variant="pointy" algorithm="sin" />
+      <Graph variant="pointy" algorithm="sin" count={128} />
       <Console source="wikimedia" />
 
       <Graph variant="bar" algorithm="random" />

@@ -65,7 +65,6 @@ export const Console: React.FC<Props> = ({ source = "wikimedia" }) => {
       ws.addEventListener("open", () => {
         appendData("Blockchain data source opened.");
 
-        ws.send(JSON.stringify({ op: "blocks_sub" }));
         ws.send(JSON.stringify({ op: "unconfirmed_sub" }));
       });
       ws.addEventListener("close", () =>

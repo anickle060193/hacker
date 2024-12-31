@@ -2,7 +2,7 @@ import React from "react";
 
 import { Cell } from "./Cell";
 
-import { useInterval } from "../hooks/useInterval";
+import { useRandomInterval } from "../hooks/useRandomInterval";
 
 import { randomBetween } from "../utils/random";
 import { assertNever } from "../utils";
@@ -74,7 +74,7 @@ export const Graph: React.FC<Props> = ({
     ALGORITHMS[algorithm](count)
   );
 
-  useInterval(true, 2000, () => {
+  useRandomInterval(true, 500, 4000, () => {
     setHeights(ALGORITHMS[algorithm](count));
   });
 
@@ -122,6 +122,7 @@ export const Graph: React.FC<Props> = ({
         css={(theme) => ({
           width: "100%",
           height: "100%",
+          strokeWidth: 0.5,
           stroke: theme.colors.primary,
         })}
       >
