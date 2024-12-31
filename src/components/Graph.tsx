@@ -1,6 +1,9 @@
 import React from "react";
 
+import { Cell } from "./Cell";
+
 import { useInterval } from "../hooks/useInterval";
+
 import { randomBetween } from "../utils/random";
 
 interface Props {
@@ -106,16 +109,5 @@ export const Graph: React.FC<Props> = ({
     content = <div />;
   }
 
-  return (
-    <div
-      css={(theme) => ({
-        borderWidth: 3,
-        borderStyle: "solid",
-        borderColor: theme.colors.primary,
-        padding: 4,
-      })}
-    >
-      {content}
-    </div>
-  );
+  return <Cell>{content}</Cell>;
 };

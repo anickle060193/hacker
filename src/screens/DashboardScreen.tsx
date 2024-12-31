@@ -1,6 +1,7 @@
 import React from "react";
 
 import { Graph } from "../components/Graph";
+import { Console } from "../components/Console";
 
 export const DashboardScreen: React.FC = () => {
   return (
@@ -18,7 +19,8 @@ export const DashboardScreen: React.FC = () => {
       <Graph algorithm="sin" />
       <Graph algorithm="random" />
       <Graph algorithm="smooth" />
-      <Graph algorithm="random" />
+      <Console source="wikimedia" />
+      <Console source="blockchain" />
     </div>
   );
 };
