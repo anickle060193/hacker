@@ -65,6 +65,7 @@ export default tseslint.config(
           ignoreProperties: true,
         },
       ],
+      "react/no-unknown-property": ["error", { ignore: ["css"] }],
     },
   }
 );
