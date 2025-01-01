@@ -48,8 +48,8 @@ export const Coder: React.FC<CellProps> = ({ ...cellProps }) => {
 
           if (e.code === "Backspace") {
             setCharacter((c) => c - 1);
-          } else if (/^[a-zA-Z]$/.test(e.key)) {
-            setCharacter((c) => c + 10);
+          } else if (/^[a-zA-Z ]$/.test(e.key)) {
+            setCharacter((c) => c + Math.floor(Math.random() * 5) + 5);
           } else if (e.key === "Enter") {
             const nextNewLine = code.slice(character).indexOf("\n");
             if (nextNewLine > 0) {
