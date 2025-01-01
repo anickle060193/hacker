@@ -5,6 +5,7 @@ import { Console } from "../components/Console";
 import { Coder } from "../components/Coder";
 import { Map } from "../components/Map";
 import { WireFrame } from "../components/WireFrame";
+import { AudioAnalyzer } from "../components/AudioAnalyzer";
 
 export const DashboardScreen: React.FC = () => {
   return (
@@ -18,19 +19,19 @@ export const DashboardScreen: React.FC = () => {
       }}
     >
       <WireFrame />
+      <Map />
+      <AudioAnalyzer />
 
       <Graph variant="bar" algorithm="sin" />
-      <Graph variant="pointy" algorithm="sin" count={128} />
       <Console source="wikimedia" />
+      <Graph variant="pointy" algorithm="sin" count={128} />
 
-      <Graph variant="bar" algorithm="random" />
-      <Graph variant="pointy" algorithm="random" />
       <Console source="blockchain" />
-
-      <Graph variant="bar" algorithm="smooth" />
       <Graph variant="pointy" algorithm="smooth" />
+      <Graph variant="bar" algorithm="random" />
 
-      <Map />
+      <Graph variant="pointy" algorithm="random" />
+      <Graph variant="bar" algorithm="smooth" />
 
       <Coder css={{ gridColumn: "span 2" }} />
     </div>
