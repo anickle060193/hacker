@@ -1,17 +1,12 @@
 import React from "react";
 import {
   BoxGeometry,
-  BufferGeometry,
   CatmullRomCurve3,
   Color,
-  DoubleSide,
   EdgesGeometry,
   LineBasicMaterial,
   LineSegments,
-  Mesh,
-  MeshBasicMaterial,
   PerspectiveCamera,
-  PlaneGeometry,
   Scene,
   Vector3,
   WebGLRenderer,
@@ -25,8 +20,6 @@ const BOX_MAX_HEIGHT = 2.0;
 const BOX_GAP = 0.3;
 
 const BOX_COUNT_XY = 100;
-
-const BOXES_SCENE_SIZE = BOX_COUNT_XY * BOX_SIZE + (BOX_COUNT_XY - 1) * BOX_GAP;
 
 export const WireFrame: React.FC<CellProps> = ({ ...cellProps }) => {
   const [canvas, setCanvas] = React.useState<HTMLCanvasElement | null>(null);
@@ -51,13 +44,6 @@ export const WireFrame: React.FC<CellProps> = ({ ...cellProps }) => {
 
     const scene = new Scene();
 
-    scene.add(
-      new Mesh(
-        new PlaneGeometry(100, 100),
-        new MeshBasicMaterial({ color: 0xffff00, side: DoubleSide })
-      )
-    );
-
     const material = new LineBasicMaterial({
       color: 0xffffff,
       linewidth: 1,
@@ -65,11 +51,10 @@ export const WireFrame: React.FC<CellProps> = ({ ...cellProps }) => {
 
     for (let x = 0; x < BOX_COUNT_XY; x++) {
       for (let y = 0; y < BOX_COUNT_XY; y++) {
-        const geometry = new BoxGeometry(
-          BOX_SIZE,
-          BOX_SIZE,
-          (BOX_MAX_HEIGHT - BOX_MIN_HEIGHT) * Math.random() + BOX_MIN_HEIGHT
-        );
+        const height =
+          (BOX_MAX_HEIGHT - BOX_MIN_HEIGHT) * Math.random() + BOX_MIN_HEIGHT;
+        const geometry = new BoxGeometry(BOX_SIZE, BOX_SIZE, height);
+        geometry.translate(BOX_SIZE / 2, BOX_SIZE / 2, height / 2);
         const edges = new EdgesGeometry(geometry);
         const box = new LineSegments(edges, material);
         box.position.set(x * (BOX_SIZE + BOX_GAP), y * (BOX_SIZE + BOX_GAP), 0);
@@ -81,17 +66,14 @@ export const WireFrame: React.FC<CellProps> = ({ ...cellProps }) => {
     const camera = new PerspectiveCamera(
       75,
       gl.canvas.width / gl.canvas.height,
-      0.1,
+      0.01,
       1000.0
     );
-    camera.position.x = BOXES_SCENE_SIZE / 2;
-    camera.position.y = BOXES_SCENE_SIZE / 2;
-    camera.position.z = 30;
 
     let lastPosition = new Vector3(
       BOX_SIZE + BOX_GAP / 2,
       BOX_SIZE + BOX_GAP / 2,
-      BOX_MIN_HEIGHT * 0.25
+      BOX_MIN_HEIGHT * 0.5
     );
 
     let changeX = false;
@@ -128,24 +110,12 @@ export const WireFrame: React.FC<CellProps> = ({ ...cellProps }) => {
       cameraPoints,
       true,
       "catmullrom",
-      0.1
+      0.01
     );
     const MAX_CAMERA_POSITIONS = 20000;
     let cameraPositionIndex = 0;
 
-    // scene.add(
-    //   new LineSegments(
-    //     new BufferGeometry().setFromPoints(
-    //       cameraSpline.getSpacedPoints(MAX_CAMERA_POSITIONS)
-    //     ),
-    //     new LineBasicMaterial({
-    //       color: "white",
-    //       linewidth: 1,
-    //     })
-    //   )
-    // );
-
-    function onRender(time: DOMHighResTimeStamp) {
+    renderer.setAnimationLoop(() => {
       const color = documentStyle.getPropertyValue("--primary-color");
       material.color = new Color(color);
 
@@ -161,28 +131,33 @@ export const WireFrame: React.FC<CellProps> = ({ ...cellProps }) => {
         (cameraPositionIndex + 1) / MAX_CAMERA_POSITIONS
       );
 
-      camera.position.x = cameraPosition.x;
-      camera.position.y = cameraPosition.y;
-      camera.position.z = cameraPosition.z;
+      camera.position.copy(cameraPosition);
 
-      camera.lookAt(nextCameraPosition);
-      camera.rotation.z = 0;
+      camera.matrix.lookAt(
+        cameraPosition,
+        nextCameraPosition,
+        new Vector3(0, 0, 1)
+      );
+      camera.quaternion.setFromRotationMatrix(camera.matrix);
 
       renderer.render(scene, camera);
-    }
-
-    renderer.setAnimationLoop(onRender);
+    });
 
     function onResize() {
       cnv.width = cnv.clientWidth;
       cnv.height = cnv.clientHeight;
 
       camera.aspect = cnv.width / cnv.height;
+      camera.updateProjectionMatrix();
+
+      renderer.setSize(cnv.width, cnv.height);
 
       renderer.render(scene, camera);
     }
 
     window.addEventListener("resize", onResize);
+
+    onResize();
 
     return () => {
       renderer.setAnimationLoop(null);
