@@ -67,7 +67,7 @@ export const WireFrame: React.FC<CellProps> = ({ ...cellProps }) => {
       75,
       gl.canvas.width / gl.canvas.height,
       0.01,
-      1000.0
+      2.5
     );
 
     let lastPosition = new Vector3(
@@ -112,7 +112,7 @@ export const WireFrame: React.FC<CellProps> = ({ ...cellProps }) => {
       "catmullrom",
       0.01
     );
-    const MAX_CAMERA_POSITIONS = 20000;
+    const MAX_CAMERA_POSITIONS = 50000;
     let cameraPositionIndex = 0;
 
     renderer.setAnimationLoop(() => {
