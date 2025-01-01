@@ -6,6 +6,9 @@ import { Coder } from "../components/Coder";
 import { Map } from "../components/Map";
 import { WireFrame } from "../components/WireFrame";
 import { AudioAnalyzer } from "../components/AudioAnalyzer";
+import { EmptyCell } from "../components/EmptyCell";
+
+const BASIC = true;
 
 export const DashboardScreen: React.FC = () => {
   return (
@@ -23,10 +26,11 @@ export const DashboardScreen: React.FC = () => {
       <AudioAnalyzer />
 
       <Graph variant="bar" algorithm="sin" />
-      <Console source="wikimedia" />
+      {BASIC ? <EmptyCell /> : <Console source="wikimedia" />}
+
       <Graph variant="pointy" algorithm="sin" count={128} />
 
-      <Console source="blockchain" />
+      {BASIC ? <EmptyCell /> : <Console source="blockchain" />}
       <Graph variant="pointy" algorithm="smooth" />
       <Graph variant="bar" algorithm="random" />
 
