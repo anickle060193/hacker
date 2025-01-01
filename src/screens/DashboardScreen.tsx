@@ -4,6 +4,7 @@ import { Graph } from "../components/Graph";
 import { Console } from "../components/Console";
 import { Coder } from "../components/Coder";
 import { Map } from "../components/Map";
+import { WireFrame } from "../components/WireFrame";
 
 export const DashboardScreen: React.FC = () => {
   return (
@@ -16,6 +17,8 @@ export const DashboardScreen: React.FC = () => {
         gap: 10,
       }}
     >
+      <WireFrame />
+
       <Graph variant="bar" algorithm="sin" />
       <Graph variant="pointy" algorithm="sin" count={128} />
       <Console source="wikimedia" />
