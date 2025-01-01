@@ -6,12 +6,16 @@ import MicrophoneIcon from "../assets/microphone.svg?react";
 
 export const AudioAnalyzer: React.FC<CellProps> = ({ ...cellProps }) => {
   const [canvas, setCanvas] = React.useState<HTMLCanvasElement | null>(null);
-  const [listen, setListen] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
+  const [audioStream, setAudioStream] = React.useState<MediaStream | null>(
+    null
+  );
 
   React.useEffect(() => {
-    if (!listen) {
+    if (!audioStream) {
       return;
     }
+    const stream = audioStream;
 
     const context = canvas?.getContext("2d");
     if (!context) {
@@ -31,60 +35,52 @@ export const AudioAnalyzer: React.FC<CellProps> = ({ ...cellProps }) => {
 
     window.addEventListener("resize", onResize);
 
-    void (async () => {
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: false,
-          audio: true,
-        });
+    const audioContext = new AudioContext();
+    const analyzer = audioContext.createAnalyser();
+    analyzer.minDecibels = -90;
+    analyzer.maxDecibels = -10;
+    analyzer.smoothingTimeConstant = 0.85;
+    analyzer.fftSize = 128;
 
-        const audioContext = new AudioContext();
-        const analyzer = audioContext.createAnalyser();
-        // analyzer.minDecibels = -90;
-        // analyzer.maxDecibels = -10;
-        // analyzer.smoothingTimeConstant = 0.85;
-        analyzer.fftSize = 128;
+    const source = audioContext.createMediaStreamSource(stream);
+    source.connect(analyzer);
 
-        const source = audioContext.createMediaStreamSource(stream);
-        source.connect(analyzer);
+    const bufferLength = analyzer.frequencyBinCount;
+    const dataArray = new Float32Array(bufferLength);
 
-        const bufferLength = analyzer.frequencyBinCount;
-        const dataArray = new Uint8Array(bufferLength);
-
-        function onRender() {
-          if (stop) {
-            return;
-          }
-
-          analyzer.getByteFrequencyData(dataArray);
-
-          const width = ctx.canvas.width;
-          const height = ctx.canvas.height;
-
-          ctx.clearRect(0, 0, width, height);
-
-          ctx.fillStyle = style.getPropertyValue("--primary-color");
-
-          const BAR_GAP = 1;
-
-          const barWidth =
-            (width - BAR_GAP * (bufferLength - 1)) / bufferLength;
-
-          for (let i = 0; i < bufferLength; i++) {
-            const x = (barWidth + BAR_GAP) * i;
-            const h = (dataArray[i] / 255) * height;
-            ctx.fillRect(x, height - h, barWidth, h);
-          }
-
-          animationFrameRequestId = window.requestAnimationFrame(onRender);
-        }
-
-        onRender();
-      } catch (e) {
-        console.warn("Failed to create audio analyzer:", e);
-        setListen(false);
+    function onRender() {
+      if (stop) {
+        return;
       }
-    })();
+
+      if (!stream.active) {
+        setAudioStream(null);
+        return;
+      }
+
+      analyzer.getFloatFrequencyData(dataArray);
+
+      const width = ctx.canvas.width;
+      const height = ctx.canvas.height;
+
+      ctx.clearRect(0, 0, width, height);
+
+      ctx.fillStyle = style.getPropertyValue("--primary-color");
+
+      const BAR_GAP = 1;
+
+      const barWidth = (width - BAR_GAP * (bufferLength - 1)) / bufferLength;
+
+      for (let i = 0; i < bufferLength; i++) {
+        const x = (barWidth + BAR_GAP) * i;
+        const h = ((dataArray[i] + 200) / 200) * height;
+        ctx.fillRect(x, height - h, barWidth, h);
+      }
+
+      animationFrameRequestId = window.requestAnimationFrame(onRender);
+    }
+
+    onRender();
 
     return () => {
       stop = true;
@@ -94,8 +90,10 @@ export const AudioAnalyzer: React.FC<CellProps> = ({ ...cellProps }) => {
       }
 
       window.removeEventListener("resize", onResize);
+
+      ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     };
-  }, [canvas, listen]);
+  }, [canvas, audioStream]);
 
   return (
     <Cell {...cellProps}>
@@ -113,7 +111,7 @@ export const AudioAnalyzer: React.FC<CellProps> = ({ ...cellProps }) => {
             height: "100%",
           }}
         />
-        {!listen && (
+        {!audioStream && (
           <MicrophoneIcon
             css={(theme) => ({
               maxHeight: "100%",
@@ -124,7 +122,25 @@ export const AudioAnalyzer: React.FC<CellProps> = ({ ...cellProps }) => {
               transform: "translate( -50%, -50% )",
               fill: theme.colors.primary,
             })}
-            onClick={() => setListen(true)}
+            onClick={
+              loading
+                ? undefined
+                : async () => {
+                    setLoading(true);
+
+                    try {
+                      const stream = await navigator.mediaDevices.getUserMedia({
+                        audio: true,
+                      });
+                      setAudioStream(stream);
+                    } catch (e) {
+                      console.warn("Failed to create audio stream:", e);
+                      setAudioStream(null);
+                    }
+
+                    setLoading(false);
+                  }
+            }
           />
         )}
       </div>
