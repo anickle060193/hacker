@@ -5,7 +5,9 @@ import { Cell, CellProps } from "./Cell";
 import code from "../assets/file.c?raw";
 
 export const Coder: React.FC<CellProps> = ({ ...cellProps }) => {
-  const [character, setCharacter] = React.useState(0);
+  const [character, setCharacter] = React.useState(
+    Math.floor(Math.random() * 500 + 100)
+  );
   const [textareaRef, setTextareaRef] =
     React.useState<HTMLTextAreaElement | null>(null);
 
