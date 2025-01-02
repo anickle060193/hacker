@@ -1,14 +1,21 @@
 import React from "react";
 import {
+  AnimationClip,
+  AnimationMixer,
   BoxGeometry,
-  CatmullRomCurve3,
+  Clock,
   Color,
   EdgesGeometry,
   LineBasicMaterial,
   LineSegments,
+  LoopOnce,
+  Matrix4,
   PerspectiveCamera,
+  Quaternion,
+  QuaternionKeyframeTrack,
   Scene,
   Vector3,
+  VectorKeyframeTrack,
   WebGLRenderer,
 } from "three";
 
@@ -19,7 +26,10 @@ const BOX_MIN_HEIGHT = 0.2;
 const BOX_MAX_HEIGHT = 2.0;
 const BOX_GAP = 0.3;
 
-const BOX_COUNT_XY = 100;
+const BOX_COUNT_XY = 20;
+
+const ROTATE_DURATION = 1;
+const MOVE_DURATION = 4;
 
 export const WireFrame: React.FC<CellProps> = ({ ...cellProps }) => {
   const [canvas, setCanvas] = React.useState<HTMLCanvasElement | null>(null);
@@ -75,76 +85,90 @@ export const WireFrame: React.FC<CellProps> = ({ ...cellProps }) => {
       0.01,
       2.5
     );
+    camera.position.x = BOX_SIZE + BOX_GAP / 2;
+    camera.position.y = BOX_SIZE + BOX_GAP / 2;
+    camera.position.z = BOX_MIN_HEIGHT * 0.5;
 
-    let lastPosition = new Vector3(
-      BOX_SIZE + BOX_GAP / 2,
-      BOX_SIZE + BOX_GAP / 2,
-      BOX_MIN_HEIGHT * 0.5
+    camera.matrix.lookAt(
+      camera.position,
+      new Vector3(1, 0, 0).add(camera.position),
+      new Vector3(0, 0, 1)
     );
+    camera.quaternion.setFromRotationMatrix(camera.matrix);
 
-    let changeX = false;
-    const cameraPoints = Array.from({ length: 100 }, () => {
-      const nextXY = Math.floor((BOX_COUNT_XY - 1) * Math.random());
-      const nextCoord = (nextXY + 1) * BOX_SIZE + (nextXY + 0.5) * BOX_GAP;
-      const nextPosition = new Vector3().copy(lastPosition);
+    const cameraMixer = new AnimationMixer(camera);
 
-      if (changeX) {
+    let movingX = true;
+
+    function createMoveAnimation() {
+      const currentPosition = camera.position;
+      const nextPosition = currentPosition.clone();
+
+      movingX = !movingX;
+
+      const nextCordInt = Math.floor((BOX_COUNT_XY - 1) * Math.random());
+      const nextCoord = (BOX_SIZE + BOX_GAP) * (nextCordInt + 1) - BOX_GAP / 2;
+      if (movingX) {
         nextPosition.x = nextCoord;
       } else {
         nextPosition.y = nextCoord;
       }
 
-      changeX = !changeX;
-      lastPosition = nextPosition;
+      const currentCameraQuaternion = camera.quaternion;
+      const nextCameraMatrix = new Matrix4();
+      nextCameraMatrix.lookAt(
+        currentPosition,
+        nextPosition,
+        new Vector3(0, 0, 1)
+      );
+      const nextCameraQuaternion = new Quaternion().setFromRotationMatrix(
+        nextCameraMatrix
+      );
 
-      return nextPosition;
-    });
+      const rotateKeyFrame = new QuaternionKeyframeTrack(
+        ".quaternion",
+        [0, ROTATE_DURATION],
+        [
+          ...currentCameraQuaternion.toArray(),
+          ...nextCameraQuaternion.toArray(),
+        ]
+      );
 
-    const firstCameraPoint = cameraPoints[0];
-    const lastCameraPoint = cameraPoints[cameraPoints.length - 1];
-    if (
-      firstCameraPoint.x !== lastCameraPoint.x ||
-      firstCameraPoint.y !== lastCameraPoint.y
-    ) {
-      const newLastCameraPoint = new Vector3().copy(lastCameraPoint);
-      newLastCameraPoint.x = firstCameraPoint.x;
-      cameraPoints.push(newLastCameraPoint);
+      const moveKeyFrame = new VectorKeyframeTrack(
+        ".position",
+        [ROTATE_DURATION, ROTATE_DURATION + MOVE_DURATION],
+        [...currentPosition.toArray(), ...nextPosition.toArray()]
+      );
+
+      const moveClip = new AnimationClip("rotate-and-move", -1, [
+        rotateKeyFrame,
+        moveKeyFrame,
+      ]);
+
+      const moveAction = cameraMixer.clipAction(moveClip);
+      moveAction.loop = LoopOnce;
+      moveAction.clampWhenFinished = true;
+
+      moveAction.play();
+
+      return moveAction;
     }
-    cameraPoints.push(firstCameraPoint);
 
-    const cameraSpline = new CatmullRomCurve3(
-      cameraPoints,
-      true,
-      "catmullrom",
-      0.01
-    );
-    const MAX_CAMERA_POSITIONS = 50000;
-    let cameraPositionIndex = 0;
+    let moveAction = createMoveAnimation();
+
+    const clock = new Clock();
 
     renderer.setAnimationLoop(() => {
       const color = documentStyle.getPropertyValue("--primary-color");
       material.color = new Color(color);
 
-      cameraPositionIndex++;
-      if (cameraPositionIndex > MAX_CAMERA_POSITIONS) {
-        cameraPositionIndex = 0;
+      cameraMixer.update(clock.getDelta());
+      if (!moveAction.isRunning()) {
+        const nextMoveAction = createMoveAnimation();
+        moveAction.stop();
+        cameraMixer.uncacheAction(moveAction.getClip());
+        moveAction = nextMoveAction;
       }
-
-      const cameraPosition = cameraSpline.getPoint(
-        cameraPositionIndex / MAX_CAMERA_POSITIONS
-      );
-      const nextCameraPosition = cameraSpline.getPoint(
-        (cameraPositionIndex + 1) / MAX_CAMERA_POSITIONS
-      );
-
-      camera.position.copy(cameraPosition);
-
-      camera.matrix.lookAt(
-        cameraPosition,
-        nextCameraPosition,
-        new Vector3(0, 0, 1)
-      );
-      camera.quaternion.setFromRotationMatrix(camera.matrix);
 
       renderer.render(scene, camera);
     });
