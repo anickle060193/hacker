@@ -8,17 +8,20 @@ html {
   box-sizing: inherit;
 }
 
-body {
-  background-color: black;
-  color: var(--primary-color);
-
-  font-family: "Monaspace Neon", monospace;
-}
-
 @property --primary-color {
   syntax: "<color>";
   initial-value: white;
   inherits: true;
+}
+
+body {
+  --background-color: black;
+  --error-color: red;
+
+  background-color: var(--background-color);
+  color: var(--primary-color);
+
+  font-family: "Monaspace Neon", monospace;
 }
 
 @keyframes primary-color-cycle {

@@ -6,6 +6,8 @@ import { DashboardScreen } from "./screens/DashboardScreen";
 const theme: Theme = {
   colors: {
     primary: "var( --primary-color )",
+    background: "var( --background-color )",
+    error: "var( --error-color )",
   },
 };
 
