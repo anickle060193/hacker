@@ -65,15 +65,19 @@ export const AudioAnalyzer: React.FC<CellProps> = ({ ...cellProps }) => {
 
       ctx.clearRect(0, 0, width, height);
 
-      ctx.fillStyle = style.getPropertyValue("--primary-color");
-
       const BAR_GAP = 1;
 
       const barWidth = (width - BAR_GAP * (bufferLength - 1)) / bufferLength;
 
       for (let i = 0; i < bufferLength; i++) {
         const x = (barWidth + BAR_GAP) * i;
-        const h = ((dataArray[i] + 200) / 200) * height;
+        const f = (dataArray[i] + 200) / 200;
+        const h = f * height;
+
+        ctx.fillStyle = `hsl(from ${style.getPropertyValue(
+          "--primary-color"
+        )} h s l / ${f.toFixed(2)})`;
+
         ctx.fillRect(x, height - h, barWidth, h);
       }
 
@@ -110,6 +114,25 @@ export const AudioAnalyzer: React.FC<CellProps> = ({ ...cellProps }) => {
             width: "100%",
             height: "100%",
           }}
+          onClick={
+            loading || audioStream
+              ? undefined
+              : async () => {
+                  setLoading(true);
+
+                  try {
+                    const stream = await navigator.mediaDevices.getUserMedia({
+                      audio: true,
+                    });
+                    setAudioStream(stream);
+                  } catch (e) {
+                    console.warn("Failed to create audio stream:", e);
+                    setAudioStream(null);
+                  }
+
+                  setLoading(false);
+                }
+          }
         />
         {!audioStream && (
           <MicrophoneIcon
@@ -120,27 +143,11 @@ export const AudioAnalyzer: React.FC<CellProps> = ({ ...cellProps }) => {
               left: "50%",
               top: "50%",
               transform: "translate( -50%, -50% )",
-              fill: theme.colors.primary,
+              stroke: theme.colors.primary,
+              strokeWidth: 4,
+              overflow: "visible",
+              pointerEvents: "none",
             })}
-            onClick={
-              loading
-                ? undefined
-                : async () => {
-                    setLoading(true);
-
-                    try {
-                      const stream = await navigator.mediaDevices.getUserMedia({
-                        audio: true,
-                      });
-                      setAudioStream(stream);
-                    } catch (e) {
-                      console.warn("Failed to create audio stream:", e);
-                      setAudioStream(null);
-                    }
-
-                    setLoading(false);
-                  }
-            }
           />
         )}
       </div>
