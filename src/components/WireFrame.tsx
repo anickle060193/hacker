@@ -37,10 +37,13 @@ export const WireFrame: React.FC<CellProps> = ({ ...cellProps }) => {
     }
     const gl = context;
 
+    const disposables: { dispose: () => void }[] = [];
+
     const documentStyle = window.getComputedStyle(document.documentElement);
 
     const renderer = new WebGLRenderer({ antialias: true, context: gl });
     renderer.setSize(gl.canvas.width, gl.canvas.height);
+    disposables.push(renderer);
 
     const scene = new Scene();
 
@@ -48,6 +51,7 @@ export const WireFrame: React.FC<CellProps> = ({ ...cellProps }) => {
       color: 0xffffff,
       linewidth: 1,
     });
+    disposables.push(material);
 
     for (let x = 0; x < BOX_COUNT_XY; x++) {
       for (let y = 0; y < BOX_COUNT_XY; y++) {
@@ -60,6 +64,8 @@ export const WireFrame: React.FC<CellProps> = ({ ...cellProps }) => {
         box.position.set(x * (BOX_SIZE + BOX_GAP), y * (BOX_SIZE + BOX_GAP), 0);
 
         scene.add(box);
+        disposables.push(geometry);
+        disposables.push(edges);
       }
     }
 
@@ -160,8 +166,7 @@ export const WireFrame: React.FC<CellProps> = ({ ...cellProps }) => {
     onResize();
 
     return () => {
-      renderer.setAnimationLoop(null);
-      renderer.dispose();
+      disposables.forEach((d) => d.dispose());
 
       window.removeEventListener("resize", onResize);
     };
