@@ -18,33 +18,35 @@ const ALGORITHMS: Record<
   (count: number) => number[]
 > = {
   smooth: (count) => {
-    const SPREAD = 0.3;
+    const INITIAL_SPREAD = 1.5;
 
     const heights = Array.from({ length: count }, () => 0);
 
     heights[0] = Math.random();
     heights[heights.length - 1] = Math.random();
 
-    const toProcess: [number, number][] = [[0, heights.length - 1]];
+    const toProcess: [number, number, number][] = [
+      [0, heights.length - 1, INITIAL_SPREAD],
+    ];
 
     while (toProcess.length > 0) {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const [i, j] = toProcess.pop()!;
+      const [i, j, spread] = toProcess.pop()!;
 
       const k = Math.floor((i + j) / 2);
       if (i < k && k < j) {
         const middle =
           randomBetween(heights[i], heights[j]) +
-          Math.random() * SPREAD -
-          SPREAD / 2;
+          Math.random() * spread -
+          spread / 2;
         heights[k] = Math.max(Math.min(middle, 1.0), 0.0);
 
         if (i < k - 1) {
-          toProcess.push([i, k]);
+          toProcess.push([i, k, spread / 2]);
         }
 
         if (k + 1 < j) {
-          toProcess.push([k, j]);
+          toProcess.push([k, j, spread / 2]);
         }
       }
     }
