@@ -30,7 +30,7 @@ const pingKeyFrames = keyframes({
   },
 });
 
-const SWEEP_ANIMATION_DURATION = "10s";
+const SWEEP_ANIMATION_DURATION = "5s";
 
 export const Radar: React.FC<CellProps> = ({ ...cellProps }) => {
   const containerRef = React.useRef<HTMLDivElement | null>(null);
@@ -52,7 +52,7 @@ export const Radar: React.FC<CellProps> = ({ ...cellProps }) => {
     { id: string; x: number; y: number }[]
   >([]);
 
-  useRandomInterval(true, 200, 2000, () => {
+  useRandomInterval(true, 200, 500, () => {
     if (!containerRef.current) {
       return;
     }
@@ -85,7 +85,8 @@ export const Radar: React.FC<CellProps> = ({ ...cellProps }) => {
       rotation = 0;
     }
 
-    const rot = rotation + (2 * Math.PI) / 180;
+    const rotationOffset = 2;
+    const rot = rotation + (rotationOffset * Math.PI) / 180;
     const size = Math.min(width, height);
     const h = Math.sqrt(2 * size * size);
     const ratio = Math.random() * 0.75 + 0.25;
