@@ -2,8 +2,9 @@ import React from "react";
 
 import { Cell, CellProps } from "./Cell";
 
-import WorldSvg from "../assets/world.svg?react";
 import { useRandomInterval } from "../hooks/useRandomInterval";
+
+import WorldSvg from "../assets/world.svg?react";
 
 export const Map: React.FC<CellProps> = ({ ...cellProps }) => {
   const [coord, setCoord] = React.useState({ x: 0.5, y: 0.5 });

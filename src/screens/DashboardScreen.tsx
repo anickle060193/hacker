@@ -8,6 +8,7 @@ import { WireFrame } from "../components/WireFrame";
 import { AudioAnalyzer } from "../components/AudioAnalyzer";
 import { DialogWindow } from "../components/DialogWindow";
 import { Cameras } from "../components/Cameras";
+import { ZoomMap } from "../components/ZoomMap";
 
 export const DashboardScreen: React.FC = () => {
   const [windowOpen, setWindowOpen] = React.useState(false);
@@ -26,21 +27,19 @@ export const DashboardScreen: React.FC = () => {
       <Map />
       <AudioAnalyzer />
 
+      <Graph variant="bar" algorithm="smooth" />
+      <Graph variant="pointy" algorithm="smooth" />
+
       <Graph variant="bar" algorithm="sin" />
       <Console speed="fast" variant="data" />
       <Cameras />
 
       <Graph variant="pointy" algorithm="sin" count={128} />
-
-      <Graph variant="bar" algorithm="smooth" />
-      <Console speed="normal" variant="chat" />
       <Graph variant="bar" algorithm="random" />
-
-      <Graph variant="pointy" algorithm="random" />
-      <Graph variant="pointy" algorithm="smooth" />
+      <Console speed="normal" variant="chat" />
 
       <Coder css={{ gridColumn: "span 2" }} />
-
+      <Graph variant="pointy" algorithm="random" />
       <DialogWindow open={windowOpen} onClose={() => setWindowOpen(false)} />
     </div>
   );
