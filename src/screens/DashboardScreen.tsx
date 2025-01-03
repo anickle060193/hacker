@@ -7,6 +7,7 @@ import { Map } from "../components/Map";
 import { WireFrame } from "../components/WireFrame";
 import { AudioAnalyzer } from "../components/AudioAnalyzer";
 import { DialogWindow } from "../components/DialogWindow";
+import { Cameras } from "../components/Cameras";
 
 export const DashboardScreen: React.FC = () => {
   const [windowOpen, setWindowOpen] = React.useState(false);
@@ -27,6 +28,7 @@ export const DashboardScreen: React.FC = () => {
 
       <Graph variant="bar" algorithm="sin" />
       <Console speed="fast" variant="data" />
+      <Cameras />
 
       <Graph variant="pointy" algorithm="sin" count={128} />
 
