@@ -64,7 +64,7 @@ export const Cameras: React.FC<CellProps> = ({ ...cellProps }) => {
             width: "100%",
             height: "100%",
             objectFit: "cover",
-            filter: "contrast( 200% ) grayscale( 100% ) brightness( 50% )",
+            filter: "grayscale( 100% ) brightness( 50% )",
           }}
           autoPlay={load}
           controls={false}
