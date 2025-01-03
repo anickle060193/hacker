@@ -77,6 +77,7 @@ export const Cameras: React.FC<CellProps> = ({ ...cellProps }) => {
             right: 0,
             bottom: 0,
             backgroundColor: `hsl( from ${theme.colors.primary} h s l / 0.2 )`,
+            cursor: "pointer",
           })}
           onClick={async () => {
             if (!load) {

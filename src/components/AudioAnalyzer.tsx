@@ -114,6 +114,9 @@ export const AudioAnalyzer: React.FC<CellProps> = ({ ...cellProps }) => {
             width: "100%",
             height: "100%",
           }}
+          style={{
+            cursor: !loading && !audioStream ? "pointer" : undefined,
+          }}
           onClick={
             loading || audioStream
               ? undefined
