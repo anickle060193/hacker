@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.0",
     "@faker-js/faker": "^9.3.0",
     "@fontsource/monaspace-neon": "^5.1.0",
     "hls.js": "^1.5.18",

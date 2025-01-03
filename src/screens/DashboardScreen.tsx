@@ -8,7 +8,7 @@ import { WireFrame } from "../components/WireFrame";
 import { AudioAnalyzer } from "../components/AudioAnalyzer";
 import { DialogWindow } from "../components/DialogWindow";
 import { Cameras } from "../components/Cameras";
-import { ZoomMap } from "../components/ZoomMap";
+import { Radar } from "../components/Radar";
 
 export const DashboardScreen: React.FC = () => {
   const [windowOpen, setWindowOpen] = React.useState(false);
@@ -27,6 +27,7 @@ export const DashboardScreen: React.FC = () => {
       <Map />
       <AudioAnalyzer />
 
+      <Radar />
       <Graph variant="bar" algorithm="smooth" />
       <Graph variant="pointy" algorithm="smooth" />
 
