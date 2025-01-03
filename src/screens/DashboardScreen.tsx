@@ -6,8 +6,11 @@ import { Coder } from "../components/Coder";
 import { Map } from "../components/Map";
 import { WireFrame } from "../components/WireFrame";
 import { AudioAnalyzer } from "../components/AudioAnalyzer";
+import { DialogWindow } from "../components/DialogWindow";
 
 export const DashboardScreen: React.FC = () => {
+  const [windowOpen, setWindowOpen] = React.useState(false);
+
   return (
     <div
       css={{
@@ -35,6 +38,8 @@ export const DashboardScreen: React.FC = () => {
       <Graph variant="bar" algorithm="smooth" />
 
       <Coder css={{ gridColumn: "span 2" }} />
+
+      <DialogWindow open={windowOpen} onClose={() => setWindowOpen(false)} />
     </div>
   );
 };
