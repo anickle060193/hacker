@@ -32,12 +32,12 @@ export const DashboardScreen: React.FC = () => {
 
       <Graph variant="pointy" algorithm="sin" count={128} />
 
+      <Graph variant="bar" algorithm="smooth" />
       <Console speed="normal" variant="chat" />
-      <Graph variant="pointy" algorithm="smooth" />
       <Graph variant="bar" algorithm="random" />
 
       <Graph variant="pointy" algorithm="random" />
-      <Graph variant="bar" algorithm="smooth" />
+      <Graph variant="pointy" algorithm="smooth" />
 
       <Coder css={{ gridColumn: "span 2" }} />
 

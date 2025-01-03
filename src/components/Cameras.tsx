@@ -19,20 +19,35 @@ export const Cameras: React.FC<CellProps> = ({ ...cellProps }) => {
     () => URLS[Math.floor(Math.random() * URLS.length)]
   );
   const [video, setVideo] = React.useState<HTMLVideoElement | null>(null);
+  const [paused, setPaused] = React.useState(true);
+  const [load, setLoad] = React.useState(false);
 
   React.useEffect(() => {
-    if (!video) {
+    if (!video || !load) {
       return;
     }
+    const vid = video;
+
+    function onPausedChanged() {
+      setPaused(vid.paused);
+    }
+
+    video.addEventListener("play", onPausedChanged);
+    video.addEventListener("pause", onPausedChanged);
+
+    onPausedChanged();
 
     const hls = new Hls();
     hls.loadSource(url);
-    hls.attachMedia(video);
+    hls.attachMedia(vid);
 
     return () => {
+      video.removeEventListener("play", onPausedChanged);
+      video.removeEventListener("pause", onPausedChanged);
+
       hls.destroy();
     };
-  }, [video, url]);
+  }, [video, load, url]);
 
   return (
     <Cell {...cellProps}>
@@ -51,7 +66,7 @@ export const Cameras: React.FC<CellProps> = ({ ...cellProps }) => {
             objectFit: "cover",
             filter: "contrast( 200% ) grayscale( 100% ) brightness( 50% )",
           }}
-          autoPlay={true}
+          autoPlay={load}
           controls={false}
         />
         <div
@@ -63,7 +78,37 @@ export const Cameras: React.FC<CellProps> = ({ ...cellProps }) => {
             bottom: 0,
             backgroundColor: `hsl( from ${theme.colors.primary} h s l / 0.2 )`,
           })}
+          onClick={async () => {
+            if (!load) {
+              setLoad(true);
+            } else if (video) {
+              if (video.paused) {
+                await video.play();
+              } else {
+                video.pause();
+              }
+            }
+          }}
         />
+        <svg
+          css={(theme) => ({
+            position: "absolute",
+            top: "50%",
+            left: "50%",
+            transform: "translate( -50%, -50% )",
+            width: "4rem",
+            height: "4rem",
+            fill: theme.colors.primary,
+            pointerEvents: "none",
+            transition: "opacity 200ms ease-in-out",
+          })}
+          style={{
+            opacity: paused ? 1 : 0,
+          }}
+          viewBox="0 0 10 10"
+        >
+          <path d="M2,2 L7,5 L2,8 z" />
+        </svg>
       </div>
     </Cell>
   );
