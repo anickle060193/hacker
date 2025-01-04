@@ -136,18 +136,18 @@ export const AudioAnalyzer: React.FC = () => {
       />
       {!audioStream && (
         <MicrophoneIcon
-          css={(theme) => ({
+          css={{
             maxHeight: "100%",
             maxWidth: "100%",
             position: "absolute",
             left: "50%",
             top: "50%",
             transform: "translate( -50%, -50% )",
-            stroke: theme.colors.primary,
+            stroke: "var( --primary-color )",
             strokeWidth: 4,
             overflow: "visible",
             pointerEvents: "none",
-          })}
+          }}
         />
       )}
     </div>

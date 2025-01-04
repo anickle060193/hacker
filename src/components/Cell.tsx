@@ -12,12 +12,10 @@ export const Cell: React.FC<Props> = ({ className, children }) => {
   return (
     <div
       className={className}
-      css={(theme) => ({
-        borderWidth: 3,
-        borderStyle: "solid",
-        borderColor: theme.colors.primary,
+      css={{
+        border: "3px solid var( --primary-color )",
         padding: 4,
-      })}
+      }}
     >
       {children}
     </div>

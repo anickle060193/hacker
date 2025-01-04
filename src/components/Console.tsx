@@ -67,6 +67,7 @@ export const Console: React.FC<Props> = ({
           bottom: 0,
           left: 0,
           right: 0,
+          color: "var( --primary-color )",
         }}
       >
         {data.map((d) => (

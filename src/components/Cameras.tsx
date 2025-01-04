@@ -67,15 +67,15 @@ export const Cameras: React.FC = () => {
         controls={false}
       />
       <div
-        css={(theme) => ({
+        css={{
           position: "absolute",
           left: 0,
           top: 0,
           right: 0,
           bottom: 0,
-          backgroundColor: `hsl( from ${theme.colors.primary} h s l / 0.2 )`,
+          backgroundColor: `hsl( from var( --primary-color ) h s l / 0.2 )`,
           cursor: "pointer",
-        })}
+        }}
         onClick={async () => {
           if (!load) {
             setLoad(true);
@@ -89,17 +89,17 @@ export const Cameras: React.FC = () => {
         }}
       />
       <svg
-        css={(theme) => ({
+        css={{
           position: "absolute",
           top: "50%",
           left: "50%",
           transform: "translate( -50%, -50% )",
           width: "4rem",
           height: "4rem",
-          fill: theme.colors.primary,
+          fill: "var( --primary-color )",
           pointerEvents: "none",
           transition: "opacity 200ms ease-in-out",
-        })}
+        }}
         style={{
           opacity: paused ? 1 : 0,
         }}

@@ -115,18 +115,16 @@ export const Radar: React.FC = () => {
       {RING_RADII.map((r) => (
         <div
           key={r}
-          css={(theme) => ({
+          css={{
             aspectRatio: 1,
             position: "absolute",
             left: "50%",
             top: "50%",
             transform: "translate( -50%, -50% )",
-            borderWidth: 2,
-            borderStyle: "solid",
-            borderColor: theme.colors.primary,
+            border: "2px solid var( --primary-color )",
             borderRadius: "50%",
             opacity: 0.5,
-          })}
+          }}
           style={{
             minWidth: `${(r * 100).toFixed(2)}%`,
             minHeight: `${(r * 100).toFixed(2)}%`,
@@ -135,15 +133,13 @@ export const Radar: React.FC = () => {
       ))}
       <div
         ref={sweeperCallbackRef}
-        css={(theme) => ({
+        css={{
           position: "absolute",
           top: "calc( 50% - 1px )",
           left: "50%",
           width: "100%",
           height: 0,
-          borderTopWidth: 2,
-          borderTopStyle: "solid",
-          borderTopColor: theme.colors.primary,
+          borderTop: "2px solid var( --primary-color )",
           transformOrigin: "0 50%",
           animation: `${sweeperAnimation} ${SWEEP_ANIMATION_DURATION} linear infinite`,
           "&::before": {
@@ -155,24 +151,24 @@ export const Radar: React.FC = () => {
             left: 0,
             transform: "translate( -50%, -50% )",
             aspectRatio: 1,
-            backgroundImage: `conic-gradient(from 90deg at 50% 50%, transparent 0 330deg, hsl( from ${theme.colors.primary} h s l / 0.3 ) )`,
+            backgroundImage: `conic-gradient(from 90deg at 50% 50%, transparent 0 330deg, hsl( from var( --primary-color ) h s l / 0.3 ) )`,
             zIndex: -1,
           },
-        })}
+        }}
       />
       {pings.map(({ id, x, y }) => (
         <div
           key={id}
-          css={(theme) => ({
+          css={{
             position: "absolute",
             transform: "translate( -50%, -50% )",
             width: 8,
             aspectRatio: 1,
-            backgroundColor: theme.colors.primary,
+            backgroundColor: "var( --primary-color )",
             borderRadius: "50%",
             opacity: 0,
             animation: `${pingKeyFrames} ${SWEEP_ANIMATION_DURATION} linear`,
-          })}
+          }}
           style={{
             left: `${x.toFixed(2)}px`,
             top: `${y.toFixed(2)}px`,

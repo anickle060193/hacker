@@ -18,7 +18,7 @@ export const Coder: React.FC = () => {
   return (
     <textarea
       ref={setTextareaRef}
-      css={(theme) => ({
+      css={{
         width: "100%",
         height: "100%",
         fontSize: "0.5em",
@@ -34,8 +34,8 @@ export const Coder: React.FC = () => {
         outline: "none",
         overflow: "auto",
         background: "transparent",
-        color: theme.colors.primary,
-      })}
+        color: "var( --primary-color )",
+      }}
       spellCheck={false}
       value={code.slice(0, character)}
       onChange={(e) => e.preventDefault()}

@@ -94,11 +94,11 @@ export const Graph: React.FC<Props> = ({
         {heights.map((height, i) => (
           <div
             key={i}
-            css={(theme) => ({
+            css={{
               flex: 1,
-              backgroundColor: theme.colors.primary,
+              backgroundColor: "var( --primary-color )",
               transition: "height 2s ease-in-out",
-            })}
+            }}
             style={{
               height: `${(100 * height).toFixed(2)}%`,
             }}
@@ -120,12 +120,12 @@ export const Graph: React.FC<Props> = ({
       <svg
         viewBox="0 0 100 100"
         preserveAspectRatio="none"
-        css={(theme) => ({
+        css={{
           width: "100%",
           height: "100%",
           strokeWidth: 0.5,
-          stroke: theme.colors.primary,
-        })}
+          stroke: "var( --primary-color )",
+        }}
       >
         <path
           css={{

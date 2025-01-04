@@ -61,17 +61,15 @@ export const DialogWindow: React.FC<Props> = ({ open, onClose, children }) => {
 
   return createPortal(
     <div
-      css={(theme) => ({
+      css={{
         position: "absolute",
         top: 0,
         left: 0,
-        borderWidth: 1,
-        borderStyle: "solid",
-        borderColor: theme.colors.primary,
-        backgroundColor: theme.colors.background,
+        border: "1px solid var( --primary-color )",
+        backgroundColor: "var( --background-color )",
         display: "flex",
         flexDirection: "column",
-      })}
+      }}
       style={{
         width: Math.max(100, size.x),
         height: Math.max(100, size.y),
@@ -79,17 +77,15 @@ export const DialogWindow: React.FC<Props> = ({ open, onClose, children }) => {
       }}
     >
       <div
-        css={(theme) => ({
-          borderBottomWidth: 1,
-          borderBottomStyle: "solid",
-          borderBottomColor: theme.colors.primary,
+        css={{
+          borderBottom: "1px solid var( --primary-color )",
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
           justifyContent: "flex-end",
           padding: 4,
           gap: 4,
-        })}
+        }}
         onMouseDown={(e) => {
           if (e.target !== e.currentTarget) {
             return;
@@ -105,25 +101,22 @@ export const DialogWindow: React.FC<Props> = ({ open, onClose, children }) => {
         }}
       >
         <button
-          css={(theme) => ({
+          css={{
             appearance: "none",
-            border: "none",
             width: "1rem",
             height: "1rem",
-            borderWidth: 1,
-            borderStyle: "solid",
-            borderColor: theme.colors.primary,
-            background: theme.colors.background,
-            stroke: theme.colors.primary,
+            border: "1px solid var( --primary-color )",
+            background: "var( --background-color )",
+            stroke: "var( --primary-color )",
             padding: 0,
             "&:hover": {
-              stroke: theme.colors.background,
-              background: theme.colors.primary,
+              stroke: "var( --background-color )",
+              background: "var( --primary-color )",
             },
             "&:active": {
               opacity: 0.5,
             },
-          })}
+          }}
           onClick={() => onClose()}
         >
           <svg
