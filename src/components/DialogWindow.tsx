@@ -9,14 +9,22 @@ interface Position {
 interface Props {
   open: boolean;
   onClose: () => void;
+  initialPosition?: Position;
   children?: React.ReactNode;
 }
 
-export const DialogWindow: React.FC<Props> = ({ open, onClose, children }) => {
+export const DialogWindow: React.FC<Props> = ({
+  open,
+  onClose,
+  initialPosition,
+  children,
+}) => {
   const [dragOffset, setDragOffset] = React.useState<Position | null>(null);
   const [resizing, setResizing] = React.useState(false);
 
-  const [position, setPosition] = React.useState<Position>({ x: 100, y: 100 });
+  const [position, setPosition] = React.useState<Position>(
+    initialPosition ?? { x: 100, y: 100 }
+  );
   const [size, setSize] = React.useState<Position>({
     x: 500,
     y: 600,
@@ -66,6 +74,7 @@ export const DialogWindow: React.FC<Props> = ({ open, onClose, children }) => {
         top: 0,
         left: 0,
         border: "1px solid var( --primary-color )",
+        outline: "3px solid black",
         backgroundColor: "var( --background-color )",
         display: "flex",
         flexDirection: "column",
@@ -87,7 +96,7 @@ export const DialogWindow: React.FC<Props> = ({ open, onClose, children }) => {
           gap: 4,
         }}
         onMouseDown={(e) => {
-          if (e.target !== e.currentTarget) {
+          if (e.target !== e.currentTarget || e.button !== 0) {
             return;
           }
 
@@ -98,6 +107,13 @@ export const DialogWindow: React.FC<Props> = ({ open, onClose, children }) => {
             x: e.clientX - box.x,
             y: e.clientY - box.y,
           });
+        }}
+        onAuxClick={(e) => {
+          if (e.button !== 1) {
+            return;
+          }
+
+          onClose();
         }}
       >
         <button

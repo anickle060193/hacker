@@ -1,7 +1,7 @@
 import React from "react";
 
-import { DashboardScreen } from "./screens/DashboardScreen";
+import { MainScreen } from "./screens/MainScreen";
 
 export const App: React.FC = () => {
-  return <DashboardScreen />;
+  return <MainScreen />;
 };
