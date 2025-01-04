@@ -10,7 +10,7 @@ import { assertNever } from "../utils";
 interface Props extends CellProps {
   count?: number;
   variant?: "bar" | "pointy";
-  algorithm?: "random" | "smooth" | "sin";
+  algorithm?: "random" | "smooth" | "sine";
 }
 
 const ALGORITHMS: Record<
@@ -56,7 +56,7 @@ const ALGORITHMS: Record<
   random: (count) => {
     return Array.from({ length: count }, () => Math.random());
   },
-  sin: (count) => {
+  sine: (count) => {
     const start = Math.PI * Math.random();
     const range = Math.PI * 2.8;
 
@@ -145,5 +145,11 @@ export const Graph: React.FC<Props> = ({
     assertNever(variant);
   }
 
-  return <Cell {...cellProps}>{content}</Cell>;
+  return (
+    <Cell {...cellProps}>
+      <div css={{ width: "100%", height: "100%", overflow: "hidden" }}>
+        {content}
+      </div>
+    </Cell>
+  );
 };

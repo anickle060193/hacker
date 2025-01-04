@@ -31,11 +31,11 @@ export const DashboardScreen: React.FC = () => {
       <Graph variant="bar" algorithm="smooth" />
       <Graph variant="pointy" algorithm="smooth" />
 
-      <Graph variant="bar" algorithm="sin" />
+      <Graph variant="bar" algorithm="sine" />
       <Console speed="fast" variant="data" />
       <Cameras />
 
-      <Graph variant="pointy" algorithm="sin" count={128} />
+      <Graph variant="pointy" algorithm="sine" count={128} />
       <Graph variant="bar" algorithm="random" />
       <Console speed="normal" variant="chat" />
 
