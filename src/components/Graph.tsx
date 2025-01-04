@@ -1,13 +1,11 @@
 import React from "react";
 
-import { Cell, CellProps } from "./Cell";
-
 import { useRandomInterval } from "../hooks/useRandomInterval";
 
 import { randomBetween } from "../utils/random";
 import { assertNever } from "../utils";
 
-interface Props extends CellProps {
+interface Props {
   count?: number;
   variant?: "bar" | "pointy";
   algorithm?: "random" | "smooth" | "sine";
@@ -71,7 +69,6 @@ export const Graph: React.FC<Props> = ({
   count = 32,
   variant = "bar",
   algorithm = "random",
-  ...cellProps
 }) => {
   const [heights, setHeights] = React.useState<number[]>(() =>
     ALGORITHMS[algorithm](count)
@@ -114,8 +111,9 @@ export const Graph: React.FC<Props> = ({
       .map(
         (h, i) =>
           (i === 0 ? "M" : "L") +
-          // eslint-disable-next-line @typescript-eslint/restrict-template-expressions
-          `${(i / (heights.length - 1)) * 100},${h * 100}`
+          `${((i / (heights.length - 1)) * 100).toFixed(2)},${(h * 100).toFixed(
+            2
+          )}`
       )
       .join(" ");
     content = (
@@ -146,10 +144,8 @@ export const Graph: React.FC<Props> = ({
   }
 
   return (
-    <Cell {...cellProps}>
-      <div css={{ width: "100%", height: "100%", overflow: "hidden" }}>
-        {content}
-      </div>
-    </Cell>
+    <div css={{ width: "100%", height: "100%", overflow: "hidden" }}>
+      {content}
+    </div>
   );
 };

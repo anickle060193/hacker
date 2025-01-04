@@ -1,5 +1,6 @@
 import React from "react";
 
+import { Cell } from "../components/Cell";
 import { Graph } from "../components/Graph";
 import { Console } from "../components/Console";
 import { Coder } from "../components/Coder";
@@ -23,24 +24,53 @@ export const DashboardScreen: React.FC = () => {
         gap: 10,
       }}
     >
-      <WireFrame />
-      <Map />
-      <AudioAnalyzer />
+      <Cell>
+        <WireFrame />
+      </Cell>
+      <Cell>
+        <Map />
+      </Cell>
+      <Cell>
+        <AudioAnalyzer />
+      </Cell>
 
-      <Radar />
-      <Graph variant="bar" algorithm="smooth" />
-      <Graph variant="pointy" algorithm="smooth" />
+      <Cell>
+        <Radar />
+      </Cell>
+      <Cell>
+        <Graph variant="bar" algorithm="smooth" />
+      </Cell>
+      <Cell>
+        <Graph variant="pointy" algorithm="smooth" />
+      </Cell>
 
-      <Graph variant="bar" algorithm="sine" />
-      <Console speed="fast" variant="data" />
-      <Cameras />
+      <Cell>
+        <Graph variant="bar" algorithm="sine" />
+      </Cell>
+      <Cell>
+        <Console speed="fast" variant="data" />
+      </Cell>
+      <Cell>
+        <Cameras />
+      </Cell>
 
-      <Graph variant="pointy" algorithm="sine" count={128} />
-      <Graph variant="bar" algorithm="random" />
-      <Console speed="normal" variant="chat" />
+      <Cell>
+        <Graph variant="pointy" algorithm="sine" count={128} />
+      </Cell>
+      <Cell>
+        <Graph variant="bar" algorithm="random" />
+      </Cell>
+      <Cell>
+        <Console speed="normal" variant="chat" />
+      </Cell>
 
-      <Coder css={{ gridColumn: "span 2" }} />
-      <Graph variant="pointy" algorithm="random" />
+      <Cell css={{ gridColumn: "span 2" }}>
+        <Coder />
+      </Cell>
+      <Cell>
+        <Graph variant="pointy" algorithm="random" />
+      </Cell>
+
       <DialogWindow open={windowOpen} onClose={() => setWindowOpen(false)} />
     </div>
   );

@@ -1,8 +1,6 @@
 import React from "react";
 import { faker } from "@faker-js/faker";
 
-import { Cell, CellProps } from "./Cell";
-
 import { useRandomInterval } from "../hooks/useRandomInterval";
 
 import { assertNever } from "../utils";
@@ -12,7 +10,7 @@ interface Datum {
   text: string;
 }
 
-interface Props extends CellProps {
+interface Props {
   speed?: "fast" | "normal";
   variant?: "chat" | "data";
 }
@@ -28,7 +26,6 @@ const SPEEDS: Record<
 export const Console: React.FC<Props> = ({
   speed = "normal",
   variant = "chat",
-  ...cellProps
 }) => {
   const [data, setData] = React.useState<Datum[]>([]);
 
@@ -55,31 +52,29 @@ export const Console: React.FC<Props> = ({
   });
 
   return (
-    <Cell {...cellProps}>
+    <div
+      css={{
+        width: "100%",
+        height: "100%",
+        fontSize: "0.5em",
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
       <div
         css={{
-          width: "100%",
-          height: "100%",
-          fontSize: "0.5em",
-          position: "relative",
-          overflow: "hidden",
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
         }}
       >
-        <div
-          css={{
-            position: "absolute",
-            bottom: 0,
-            left: 0,
-            right: 0,
-          }}
-        >
-          {data.map((d) => (
-            <div key={d.id} css={{ whiteSpace: "nowrap" }}>
-              {d.text}
-            </div>
-          ))}
-        </div>
+        {data.map((d) => (
+          <div key={d.id} css={{ whiteSpace: "nowrap" }}>
+            {d.text}
+          </div>
+        ))}
       </div>
-    </Cell>
+    </div>
   );
 };

@@ -1,8 +1,6 @@
 import React from "react";
 import { keyframes } from "@emotion/react";
 
-import { Cell, CellProps } from "./Cell";
-
 import { useRandomInterval } from "../hooks/useRandomInterval";
 
 const RING_RADII = [1.0, 0.75, 0.5, 0.25];
@@ -32,7 +30,7 @@ const pingKeyFrames = keyframes({
 
 const SWEEP_ANIMATION_DURATION = "5s";
 
-export const Radar: React.FC<CellProps> = ({ ...cellProps }) => {
+export const Radar: React.FC = () => {
   const containerRef = React.useRef<HTMLDivElement | null>(null);
   const sweeperStyleRef = React.useRef<CSSStyleDeclaration | null>(null);
 
@@ -105,87 +103,85 @@ export const Radar: React.FC<CellProps> = ({ ...cellProps }) => {
   });
 
   return (
-    <Cell {...cellProps}>
-      <div
-        ref={containerRef}
-        css={{
-          width: "100%",
-          height: "100%",
-          position: "relative",
-          overflow: "hidden",
-        }}
-      >
-        {RING_RADII.map((r) => (
-          <div
-            key={r}
-            css={(theme) => ({
-              aspectRatio: 1,
-              position: "absolute",
-              left: "50%",
-              top: "50%",
-              transform: "translate( -50%, -50% )",
-              borderWidth: 2,
-              borderStyle: "solid",
-              borderColor: theme.colors.primary,
-              borderRadius: "50%",
-              opacity: 0.5,
-            })}
-            style={{
-              minWidth: `${(r * 100).toFixed(2)}%`,
-              minHeight: `${(r * 100).toFixed(2)}%`,
-            }}
-          />
-        ))}
+    <div
+      ref={containerRef}
+      css={{
+        width: "100%",
+        height: "100%",
+        position: "relative",
+        overflow: "hidden",
+      }}
+    >
+      {RING_RADII.map((r) => (
         <div
-          ref={sweeperCallbackRef}
+          key={r}
+          css={(theme) => ({
+            aspectRatio: 1,
+            position: "absolute",
+            left: "50%",
+            top: "50%",
+            transform: "translate( -50%, -50% )",
+            borderWidth: 2,
+            borderStyle: "solid",
+            borderColor: theme.colors.primary,
+            borderRadius: "50%",
+            opacity: 0.5,
+          })}
+          style={{
+            minWidth: `${(r * 100).toFixed(2)}%`,
+            minHeight: `${(r * 100).toFixed(2)}%`,
+          }}
+        />
+      ))}
+      <div
+        ref={sweeperCallbackRef}
+        css={(theme) => ({
+          position: "absolute",
+          top: "calc( 50% - 1px )",
+          left: "50%",
+          width: "100%",
+          height: 0,
+          borderTopWidth: 2,
+          borderTopStyle: "solid",
+          borderTopColor: theme.colors.primary,
+          transformOrigin: "0 50%",
+          animation: `${sweeperAnimation} ${SWEEP_ANIMATION_DURATION} linear infinite`,
+          "&::before": {
+            content: '""',
+            position: "absolute",
+            display: "block",
+            width: "200%",
+            top: 0,
+            left: 0,
+            transform: "translate( -50%, -50% )",
+            aspectRatio: 1,
+            backgroundImage: `conic-gradient(from 90deg at 50% 50%, transparent 0 330deg, hsl( from ${theme.colors.primary} h s l / 0.3 ) )`,
+            zIndex: -1,
+          },
+        })}
+      />
+      {pings.map(({ id, x, y }) => (
+        <div
+          key={id}
           css={(theme) => ({
             position: "absolute",
-            top: "calc( 50% - 1px )",
-            left: "50%",
-            width: "100%",
-            height: 0,
-            borderTopWidth: 2,
-            borderTopStyle: "solid",
-            borderTopColor: theme.colors.primary,
-            transformOrigin: "0 50%",
-            animation: `${sweeperAnimation} ${SWEEP_ANIMATION_DURATION} linear infinite`,
-            "&::before": {
-              content: '""',
-              position: "absolute",
-              display: "block",
-              width: "200%",
-              top: 0,
-              left: 0,
-              transform: "translate( -50%, -50% )",
-              aspectRatio: 1,
-              backgroundImage: `conic-gradient(from 90deg at 50% 50%, transparent 0 330deg, hsl( from ${theme.colors.primary} h s l / 0.3 ) )`,
-              zIndex: -1,
-            },
+            transform: "translate( -50%, -50% )",
+            width: 8,
+            aspectRatio: 1,
+            backgroundColor: theme.colors.primary,
+            borderRadius: "50%",
+            opacity: 0,
+            animation: `${pingKeyFrames} ${SWEEP_ANIMATION_DURATION} linear`,
           })}
+          style={{
+            left: `${x.toFixed(2)}px`,
+            top: `${y.toFixed(2)}px`,
+          }}
+          onAnimationEnd={() => {
+            setPings((ps) => ps.filter((p) => p.id !== id));
+          }}
         />
-        {pings.map(({ id, x, y }) => (
-          <div
-            key={id}
-            css={(theme) => ({
-              position: "absolute",
-              transform: "translate( -50%, -50% )",
-              width: 8,
-              aspectRatio: 1,
-              backgroundColor: theme.colors.primary,
-              borderRadius: "50%",
-              opacity: 0,
-              animation: `${pingKeyFrames} ${SWEEP_ANIMATION_DURATION} linear`,
-            })}
-            style={{
-              left: `${x.toFixed(2)}px`,
-              top: `${y.toFixed(2)}px`,
-            }}
-            onAnimationEnd={() => {
-              setPings((ps) => ps.filter((p) => p.id !== id));
-            }}
-          />
-        ))}
-      </div>
-    </Cell>
+      ))}
+    </div>
   );
 };

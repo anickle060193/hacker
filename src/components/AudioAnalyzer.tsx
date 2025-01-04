@@ -1,10 +1,8 @@
 import React from "react";
 
-import { Cell, CellProps } from "./Cell";
-
 import MicrophoneIcon from "../assets/microphone.svg?react";
 
-export const AudioAnalyzer: React.FC<CellProps> = ({ ...cellProps }) => {
+export const AudioAnalyzer: React.FC = () => {
   const [canvas, setCanvas] = React.useState<HTMLCanvasElement | null>(null);
   const [loading, setLoading] = React.useState(false);
   const [audioStream, setAudioStream] = React.useState<MediaStream | null>(
@@ -100,60 +98,58 @@ export const AudioAnalyzer: React.FC<CellProps> = ({ ...cellProps }) => {
   }, [canvas, audioStream]);
 
   return (
-    <Cell {...cellProps}>
-      <div
+    <div
+      css={{
+        width: "100%",
+        height: "100%",
+        position: "relative",
+      }}
+    >
+      <canvas
+        ref={setCanvas}
         css={{
           width: "100%",
           height: "100%",
-          position: "relative",
         }}
-      >
-        <canvas
-          ref={setCanvas}
-          css={{
-            width: "100%",
-            height: "100%",
-          }}
-          style={{
-            cursor: !loading && !audioStream ? "pointer" : undefined,
-          }}
-          onClick={
-            loading || audioStream
-              ? undefined
-              : async () => {
-                  setLoading(true);
+        style={{
+          cursor: !loading && !audioStream ? "pointer" : undefined,
+        }}
+        onClick={
+          loading || audioStream
+            ? undefined
+            : async () => {
+                setLoading(true);
 
-                  try {
-                    const stream = await navigator.mediaDevices.getUserMedia({
-                      audio: true,
-                    });
-                    setAudioStream(stream);
-                  } catch (e) {
-                    console.warn("Failed to create audio stream:", e);
-                    setAudioStream(null);
-                  }
-
-                  setLoading(false);
+                try {
+                  const stream = await navigator.mediaDevices.getUserMedia({
+                    audio: true,
+                  });
+                  setAudioStream(stream);
+                } catch (e) {
+                  console.warn("Failed to create audio stream:", e);
+                  setAudioStream(null);
                 }
-          }
+
+                setLoading(false);
+              }
+        }
+      />
+      {!audioStream && (
+        <MicrophoneIcon
+          css={(theme) => ({
+            maxHeight: "100%",
+            maxWidth: "100%",
+            position: "absolute",
+            left: "50%",
+            top: "50%",
+            transform: "translate( -50%, -50% )",
+            stroke: theme.colors.primary,
+            strokeWidth: 4,
+            overflow: "visible",
+            pointerEvents: "none",
+          })}
         />
-        {!audioStream && (
-          <MicrophoneIcon
-            css={(theme) => ({
-              maxHeight: "100%",
-              maxWidth: "100%",
-              position: "absolute",
-              left: "50%",
-              top: "50%",
-              transform: "translate( -50%, -50% )",
-              stroke: theme.colors.primary,
-              strokeWidth: 4,
-              overflow: "visible",
-              pointerEvents: "none",
-            })}
-          />
-        )}
-      </div>
-    </Cell>
+      )}
+    </div>
   );
 };

@@ -25,8 +25,6 @@ import { LineMaterial } from "three/addons/lines/LineMaterial.js";
 import { LineSegments2 } from "three/addons/lines/LineSegments2.js";
 import { LineSegmentsGeometry } from "three/addons/lines/LineSegmentsGeometry.js";
 
-import { Cell, CellProps } from "./Cell";
-
 const BOX_SIZE = 0.2;
 const BOX_MIN_HEIGHT = 0.2;
 const BOX_MAX_HEIGHT = 2.0;
@@ -38,7 +36,7 @@ const CAMERA_HEIGHT = BOX_MIN_HEIGHT * 0.5;
 
 const ROTATE_DURATION = 1;
 
-export const WireFrame: React.FC<CellProps> = ({ ...cellProps }) => {
+export const WireFrame: React.FC = () => {
   const [canvas, setCanvas] = React.useState<HTMLCanvasElement | null>(null);
 
   React.useEffect(() => {
@@ -283,14 +281,12 @@ export const WireFrame: React.FC<CellProps> = ({ ...cellProps }) => {
   }, [canvas]);
 
   return (
-    <Cell {...cellProps}>
-      <canvas
-        ref={setCanvas}
-        css={{
-          width: "100%",
-          height: "100%",
-        }}
-      />
-    </Cell>
+    <canvas
+      ref={setCanvas}
+      css={{
+        width: "100%",
+        height: "100%",
+      }}
+    />
   );
 };

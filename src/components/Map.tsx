@@ -1,12 +1,10 @@
 import React from "react";
 
-import { Cell, CellProps } from "./Cell";
-
 import { useRandomInterval } from "../hooks/useRandomInterval";
 
 import WorldSvg from "../assets/world.svg?react";
 
-export const Map: React.FC<CellProps> = ({ ...cellProps }) => {
+export const Map: React.FC = () => {
   const [coord, setCoord] = React.useState({ x: 0.5, y: 0.5 });
 
   useRandomInterval(true, 500, 4000, () => {
@@ -14,8 +12,7 @@ export const Map: React.FC<CellProps> = ({ ...cellProps }) => {
   });
 
   return (
-    <Cell
-      {...cellProps}
+    <div
       css={{
         position: "relative",
         overflow: "hidden",
@@ -81,6 +78,6 @@ export const Map: React.FC<CellProps> = ({ ...cellProps }) => {
           left: `${(100 * coord.x).toFixed(2)}%`,
         }}
       />
-    </Cell>
+    </div>
   );
 };
