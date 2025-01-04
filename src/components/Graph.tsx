@@ -5,14 +5,14 @@ import { useRandomInterval } from "../hooks/useRandomInterval";
 import { randomBetween } from "../utils/random";
 import { assertNever } from "../utils";
 
-interface Props {
+export interface GraphProps {
   count?: number;
   variant?: "bar" | "pointy";
   algorithm?: "random" | "smooth" | "sine";
 }
 
 const ALGORITHMS: Record<
-  NonNullable<Props["algorithm"]>,
+  NonNullable<GraphProps["algorithm"]>,
   (count: number) => number[]
 > = {
   smooth: (count) => {
@@ -65,7 +65,7 @@ const ALGORITHMS: Record<
   },
 };
 
-export const Graph: React.FC<Props> = ({
+export const Graph: React.FC<GraphProps> = ({
   count = 32,
   variant = "bar",
   algorithm = "random",
@@ -98,6 +98,7 @@ export const Graph: React.FC<Props> = ({
               flex: 1,
               backgroundColor: "var( --primary-color )",
               transition: "height 2s ease-in-out",
+              minWidth: 1,
             }}
             style={{
               height: `${(100 * height).toFixed(2)}%`,

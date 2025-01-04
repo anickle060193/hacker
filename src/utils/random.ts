@@ -4,3 +4,7 @@ export function randomBetween(a: number, b: number) {
 
   return (max - min) * Math.random() + min;
 }
+
+export function randomChoice<T>(array: T[]): T {
+  return array[Math.floor(array.length * Math.random())];
+}

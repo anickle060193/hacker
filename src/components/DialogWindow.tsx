@@ -26,8 +26,8 @@ export const DialogWindow: React.FC<Props> = ({
     initialPosition ?? { x: 100, y: 100 }
   );
   const [size, setSize] = React.useState<Position>({
-    x: 500,
-    y: 600,
+    x: 300,
+    y: 200,
   });
 
   React.useEffect(() => {
@@ -150,6 +150,7 @@ export const DialogWindow: React.FC<Props> = ({
       <div
         css={{
           flex: 1,
+          overflow: "hidden",
         }}
       >
         {children}

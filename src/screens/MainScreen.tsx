@@ -1,8 +1,19 @@
 import React from "react";
 import { Global } from "@emotion/react";
 import styled from "@emotion/styled";
+
+import { AudioAnalyzer } from "../components/AudioAnalyzer";
+import { Cameras } from "../components/Cameras";
+import { Coder } from "../components/Coder";
+import { Console, ConsoleProps } from "../components/Console";
 import { DialogWindow } from "../components/DialogWindow";
-import { Graph } from "../components/Graph";
+import { Graph, GraphProps } from "../components/Graph";
+import { Map } from "../components/Map";
+import { Radar } from "../components/Radar";
+import { WireFrame } from "../components/WireFrame";
+
+import { assertNever } from "../utils";
+import { randomBetween, randomChoice } from "../utils/random";
 
 const AppIcon = styled("div")({
   width: "100%",
@@ -29,14 +40,55 @@ const globalStyles = (
   />
 );
 
+interface AppPropsMapping {
+  audioAnalyzer: object;
+  cameras: object;
+  coder: object;
+  console: ConsoleProps;
+  graph: GraphProps;
+  map: object;
+  radar: object;
+  wireFrame: object;
+}
+
+type App = {
+  id: string;
+} & {
+  [K in keyof AppPropsMapping]: {
+    type: K;
+    props: AppPropsMapping[K];
+  };
+}[keyof AppPropsMapping];
+
 export const MainScreen: React.FC = () => {
   const containerRef = React.useRef<HTMLDivElement | null>(null);
 
-  const [graphApps, setGraphApps] = React.useState<string[]>([]);
+  const [apps, setApps] = React.useState<App[]>([]);
   const [nextInitialPosition, setNextInitialPosition] = React.useState<{
     x: number;
     y: number;
-  }>({ x: 50, y: 0 });
+  }>({ x: 0, y: 0 });
+
+  function addApp(app: App) {
+    let { x, y } = nextInitialPosition;
+    if (apps.length === 0) {
+      x = 80;
+      y = 20;
+    } else {
+      x += 20;
+      y += 20;
+
+      if (containerRef.current) {
+        if (y >= containerRef.current.clientHeight * 0.5) {
+          y = 20;
+        }
+      }
+    }
+
+    setNextInitialPosition({ x, y });
+
+    setApps([...apps, app]);
+  }
 
   return (
     <>
@@ -63,20 +115,17 @@ export const MainScreen: React.FC = () => {
           }}
         >
           <AppIcon
-            onClick={() => {
-              let { x, y } = nextInitialPosition;
-              x += 20;
-              y += 20;
-
-              if (containerRef.current) {
-                if (y >= containerRef.current.clientHeight * 0.5) {
-                  y = 20;
-                }
-              }
-
-              setNextInitialPosition({ x, y });
-              setGraphApps((a) => [...a, crypto.randomUUID()]);
-            }}
+            onClick={() =>
+              addApp({
+                id: crypto.randomUUID(),
+                type: "graph",
+                props: {
+                  algorithm: randomChoice(["random", "smooth", "sine"]),
+                  count: randomBetween(32, 128),
+                  variant: randomChoice(["bar", "pointy"]),
+                },
+              })
+            }
           >
             <svg
               viewBox="0 0 26 26"
@@ -99,16 +148,41 @@ export const MainScreen: React.FC = () => {
           }}
         ></div>
       </div>
-      {graphApps.map((g) => (
-        <DialogWindow
-          key={g}
-          open={true}
-          initialPosition={nextInitialPosition}
-          onClose={() => setGraphApps((gas) => gas.filter((ga) => ga !== g))}
-        >
-          <Graph />
-        </DialogWindow>
-      ))}
+      {apps.map((a) => {
+        let content: NonNullable<React.ReactNode>;
+        if (a.type === "audioAnalyzer") {
+          content = <AudioAnalyzer />;
+        } else if (a.type === "cameras") {
+          content = <Cameras />;
+        } else if (a.type === "coder") {
+          content = <Coder />;
+        } else if (a.type === "console") {
+          content = <Console {...a.props} />;
+        } else if (a.type === "graph") {
+          content = <Graph {...a.props} />;
+        } else if (a.type === "map") {
+          content = <Map {...a.props} />;
+        } else if (a.type === "radar") {
+          content = <Radar />;
+        } else if (a.type === "wireFrame") {
+          content = <WireFrame />;
+        } else {
+          assertNever(a);
+        }
+
+        return (
+          <DialogWindow
+            key={a.id}
+            open={true}
+            initialPosition={nextInitialPosition}
+            onClose={() =>
+              setApps((apps) => apps.filter((ap) => ap.id !== a.id))
+            }
+          >
+            {content}
+          </DialogWindow>
+        );
+      })}
     </>
   );
 };

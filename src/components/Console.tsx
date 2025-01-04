@@ -5,25 +5,25 @@ import { useRandomInterval } from "../hooks/useRandomInterval";
 
 import { assertNever } from "../utils";
 
-interface Datum {
-  id: string;
-  text: string;
-}
-
-interface Props {
-  speed?: "fast" | "normal";
-  variant?: "chat" | "data";
-}
-
 const SPEEDS: Record<
-  NonNullable<Props["speed"]>,
+  NonNullable<ConsoleProps["speed"]>,
   [min: number, max: number]
 > = {
   fast: [50, 100],
   normal: [50, 1000],
 };
 
-export const Console: React.FC<Props> = ({
+interface Datum {
+  id: string;
+  text: string;
+}
+
+export interface ConsoleProps {
+  speed?: "fast" | "normal";
+  variant?: "chat" | "data";
+}
+
+export const Console: React.FC<ConsoleProps> = ({
   speed = "normal",
   variant = "chat",
 }) => {
