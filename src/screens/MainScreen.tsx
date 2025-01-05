@@ -41,24 +41,27 @@ const globalStyles = (
 );
 
 interface AppPropsMapping {
-  audioAnalyzer: object;
-  cameras: object;
-  coder: object;
+  audioAnalyzer: Record<string, never>;
+  cameras: Record<string, never>;
+  coder: Record<string, never>;
   console: ConsoleProps;
   graph: GraphProps;
-  map: object;
-  radar: object;
-  wireFrame: object;
+  map: Record<string, never>;
+  radar: Record<string, never>;
+  wireFrame: Record<string, never>;
 }
 
-type App = {
-  id: string;
-} & {
+type BaseApp = {
   [K in keyof AppPropsMapping]: {
     type: K;
     props: AppPropsMapping[K];
   };
 }[keyof AppPropsMapping];
+
+type App = {
+  id: string;
+  zIndex: number;
+} & BaseApp;
 
 export const MainScreen: React.FC = () => {
   const containerRef = React.useRef<HTMLDivElement | null>(null);
@@ -68,8 +71,9 @@ export const MainScreen: React.FC = () => {
     x: number;
     y: number;
   }>({ x: 0, y: 0 });
+  const [nextZIndex, setNextZIndex] = React.useState(0);
 
-  function addApp(app: App) {
+  function addApp(app: BaseApp) {
     let { x, y } = nextInitialPosition;
     if (apps.length === 0) {
       x = 80;
@@ -86,8 +90,16 @@ export const MainScreen: React.FC = () => {
     }
 
     setNextInitialPosition({ x, y });
+    setNextZIndex((z) => z + 1);
 
-    setApps([...apps, app]);
+    setApps([
+      ...apps,
+      {
+        id: crypto.randomUUID(),
+        zIndex: nextZIndex,
+        ...app,
+      },
+    ]);
   }
 
   return (
@@ -117,7 +129,6 @@ export const MainScreen: React.FC = () => {
           <AppIcon
             onClick={() =>
               addApp({
-                id: crypto.randomUUID(),
                 type: "graph",
                 props: {
                   algorithm: randomChoice(["random", "smooth", "sine"]),
@@ -140,7 +151,76 @@ export const MainScreen: React.FC = () => {
               <rect x="21" y="9" width="4" height="16" />
             </svg>
           </AppIcon>
-          <AppIcon>G</AppIcon>
+          <AppIcon
+            onClick={() =>
+              addApp({
+                type: "audioAnalyzer",
+                props: {},
+              })
+            }
+          >
+            A
+          </AppIcon>
+          <AppIcon
+            onClick={() =>
+              addApp({
+                type: "cameras",
+                props: {},
+              })
+            }
+          >
+            C
+          </AppIcon>
+          <AppIcon
+            onClick={() =>
+              addApp({
+                type: "coder",
+                props: {},
+              })
+            }
+          >
+            Co
+          </AppIcon>
+          <AppIcon
+            onClick={() =>
+              addApp({
+                type: "console",
+                props: {},
+              })
+            }
+          >
+            Con
+          </AppIcon>
+          <AppIcon
+            onClick={() =>
+              addApp({
+                type: "map",
+                props: {},
+              })
+            }
+          >
+            M
+          </AppIcon>
+          <AppIcon
+            onClick={() =>
+              addApp({
+                type: "radar",
+                props: {},
+              })
+            }
+          >
+            R
+          </AppIcon>
+          <AppIcon
+            onClick={() =>
+              addApp({
+                type: "wireFrame",
+                props: {},
+              })
+            }
+          >
+            W
+          </AppIcon>
         </div>
         <div
           css={{
@@ -174,10 +254,19 @@ export const MainScreen: React.FC = () => {
           <DialogWindow
             key={a.id}
             open={true}
+            onClose={() => {
+              setApps((apps) => apps.filter((ap) => ap.id !== a.id));
+            }}
             initialPosition={nextInitialPosition}
-            onClose={() =>
-              setApps((apps) => apps.filter((ap) => ap.id !== a.id))
-            }
+            zIndex={a.zIndex}
+            onWindowFocus={() => {
+              setApps((apps) =>
+                apps.map((ap) =>
+                  ap.id === a.id ? { ...ap, zIndex: nextZIndex } : ap
+                )
+              );
+              setNextZIndex((z) => z + 1);
+            }}
           >
             {content}
           </DialogWindow>

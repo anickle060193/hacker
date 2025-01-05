@@ -9,14 +9,18 @@ interface Position {
 interface Props {
   open: boolean;
   onClose: () => void;
+  zIndex?: number;
   initialPosition?: Position;
+  onWindowFocus: () => void;
   children?: React.ReactNode;
 }
 
 export const DialogWindow: React.FC<Props> = ({
   open,
   onClose,
+  zIndex,
   initialPosition,
+  onWindowFocus,
   children,
 }) => {
   const [dragOffset, setDragOffset] = React.useState<Position | null>(null);
@@ -83,6 +87,10 @@ export const DialogWindow: React.FC<Props> = ({
         width: Math.max(100, size.x),
         height: Math.max(100, size.y),
         transform: `translate( ${position.x.toFixed()}px, ${position.y.toFixed()}px )`,
+        zIndex: zIndex,
+      }}
+      onMouseDownCapture={() => {
+        onWindowFocus();
       }}
     >
       <div
