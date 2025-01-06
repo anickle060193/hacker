@@ -269,14 +269,15 @@ export const WireFrame: React.FC = () => {
       renderer.render(scene, camera);
     }
 
-    window.addEventListener("resize", onResize);
+    const observer = new ResizeObserver(onResize);
+    observer.observe(canvas);
 
     onResize();
 
     return () => {
       disposables.forEach((d) => d.dispose());
 
-      window.removeEventListener("resize", onResize);
+      observer.disconnect();
     };
   }, [canvas]);
 

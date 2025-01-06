@@ -31,7 +31,8 @@ export const AudioAnalyzer: React.FC = () => {
       ctx.canvas.height = ctx.canvas.clientHeight;
     }
 
-    window.addEventListener("resize", onResize);
+    const observer = new ResizeObserver(onResize);
+    observer.observe(ctx.canvas);
 
     const audioContext = new AudioContext();
     const analyzer = audioContext.createAnalyser();
@@ -91,7 +92,7 @@ export const AudioAnalyzer: React.FC = () => {
         window.cancelAnimationFrame(animationFrameRequestId);
       }
 
-      window.removeEventListener("resize", onResize);
+      observer.disconnect();
 
       ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
     };
