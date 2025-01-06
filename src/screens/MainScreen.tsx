@@ -15,14 +15,23 @@ import { WireFrame } from "../components/WireFrame";
 import { assertNever } from "../utils";
 import { randomBetween, randomChoice } from "../utils/random";
 
+import MicrophoneIcon from "../assets/microphone.svg?react";
+import CameraIcon from "../assets/security-camera.svg?react";
+import CodeIcon from "../assets/code.svg?react";
+import ConsoleIcon from "../assets/console.svg?react";
+import MapIcon from "../assets/map.svg?react";
+import RadarIcon from "../assets/radar.svg?react";
+import WireFrameIcon from "../assets/wireframe.svg?react";
+import GraphIcon from "../assets/graph.svg?react";
+
 const AppIcon = styled("div")({
-  width: "100%",
+  width: "3rem",
+  height: "3rem",
   border: "2px solid var( --primary-color )",
   display: "flex",
   flexDirection: "column",
   alignItems: "center",
   justifyContent: "center",
-  aspectRatio: 1,
   cursor: "pointer",
 });
 
@@ -123,7 +132,6 @@ export const MainScreen: React.FC = () => {
             alignItems: "center",
             padding: 8,
             gap: 8,
-            width: "4rem",
           }}
         >
           <AppIcon
@@ -138,18 +146,14 @@ export const MainScreen: React.FC = () => {
               })
             }
           >
-            <svg
-              viewBox="0 0 26 26"
+            <GraphIcon
               css={{
                 fill: "var( --primary-color )",
+                width: "100%",
+                height: "100%",
+                margin: 4,
               }}
-            >
-              <rect x="1" y="1" width="4" height="24" />
-              <rect x="6" y="11" width="4" height="14" />
-              <rect x="11" y="5" width="4" height="20" />
-              <rect x="16" y="17" width="4" height="8" />
-              <rect x="21" y="9" width="4" height="16" />
-            </svg>
+            />
           </AppIcon>
           <AppIcon
             onClick={() =>
@@ -159,7 +163,14 @@ export const MainScreen: React.FC = () => {
               })
             }
           >
-            A
+            <MicrophoneIcon
+              css={{
+                fill: "var( --primary-color )",
+                width: "100%",
+                height: "100%",
+                margin: 4,
+              }}
+            />
           </AppIcon>
           <AppIcon
             onClick={() =>
@@ -169,7 +180,14 @@ export const MainScreen: React.FC = () => {
               })
             }
           >
-            C
+            <CameraIcon
+              css={{
+                fill: "var( --primary-color )",
+                width: "100%",
+                height: "100%",
+                margin: 4,
+              }}
+            />
           </AppIcon>
           <AppIcon
             onClick={() =>
@@ -179,7 +197,14 @@ export const MainScreen: React.FC = () => {
               })
             }
           >
-            Co
+            <CodeIcon
+              css={{
+                fill: "var( --primary-color )",
+                width: "100%",
+                height: "100%",
+                margin: 4,
+              }}
+            />
           </AppIcon>
           <AppIcon
             onClick={() =>
@@ -189,7 +214,14 @@ export const MainScreen: React.FC = () => {
               })
             }
           >
-            Con
+            <ConsoleIcon
+              css={{
+                fill: "var( --primary-color )",
+                width: "100%",
+                height: "100%",
+                margin: 4,
+              }}
+            />
           </AppIcon>
           <AppIcon
             onClick={() =>
@@ -199,7 +231,14 @@ export const MainScreen: React.FC = () => {
               })
             }
           >
-            M
+            <MapIcon
+              css={{
+                fill: "var( --primary-color )",
+                width: "100%",
+                height: "100%",
+                margin: 4,
+              }}
+            />
           </AppIcon>
           <AppIcon
             onClick={() =>
@@ -209,7 +248,14 @@ export const MainScreen: React.FC = () => {
               })
             }
           >
-            R
+            <RadarIcon
+              css={{
+                fill: "var( --primary-color )",
+                width: "100%",
+                height: "100%",
+                margin: 4,
+              }}
+            />
           </AppIcon>
           <AppIcon
             onClick={() =>
@@ -219,7 +265,14 @@ export const MainScreen: React.FC = () => {
               })
             }
           >
-            W
+            <WireFrameIcon
+              css={{
+                fill: "var( --primary-color )",
+                width: "100%",
+                height: "100%",
+                margin: 4,
+              }}
+            />
           </AppIcon>
         </div>
         <div
