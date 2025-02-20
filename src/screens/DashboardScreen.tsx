@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router";
 
 import { Cell } from "../components/Cell";
 import { Graph } from "../components/Graph";
@@ -7,13 +8,12 @@ import { Coder } from "../components/Coder";
 import { Map } from "../components/Map";
 import { WireFrame } from "../components/WireFrame";
 import { AudioAnalyzer } from "../components/AudioAnalyzer";
-import { DialogWindow } from "../components/DialogWindow";
 import { Cameras } from "../components/Cameras";
 import { Radar } from "../components/Radar";
 
-export const DashboardScreen: React.FC = () => {
-  const [windowOpen, setWindowOpen] = React.useState(false);
+import HomeIcon from "../assets/home.svg?react";
 
+export const DashboardScreen: React.FC = () => {
   return (
     <div
       css={{
@@ -71,7 +71,25 @@ export const DashboardScreen: React.FC = () => {
         <Graph variant="pointy" algorithm="random" />
       </Cell>
 
-      <DialogWindow open={windowOpen} onClose={() => setWindowOpen(false)} />
+      <Cell>
+        <Link
+          to="/"
+          css={{
+            width: "100%",
+            height: "100%",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
+          <HomeIcon
+            css={{
+              fill: "var( --primary-color )",
+            }}
+          />
+        </Link>
+      </Cell>
     </div>
   );
 };

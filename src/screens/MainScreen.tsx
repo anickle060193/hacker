@@ -1,6 +1,7 @@
 import React from "react";
 import { Global } from "@emotion/react";
 import styled from "@emotion/styled";
+import { Link } from "react-router";
 
 import { AudioAnalyzer } from "../components/AudioAnalyzer";
 import { Cameras } from "../components/Cameras";
@@ -23,6 +24,7 @@ import MapIcon from "../assets/map.svg?react";
 import RadarIcon from "../assets/radar.svg?react";
 import WireFrameIcon from "../assets/wireframe.svg?react";
 import GraphIcon from "../assets/graph.svg?react";
+import DashboardIcon from "../assets/dashboard.svg?react";
 
 const AppIcon = styled("div")({
   width: "3rem",
@@ -33,6 +35,12 @@ const AppIcon = styled("div")({
   alignItems: "center",
   justifyContent: "center",
   cursor: "pointer",
+  "& svg": {
+    fill: "var( --primary-color )",
+    width: "100%",
+    height: "100%",
+    margin: 4,
+  },
 });
 
 const globalStyles = (
@@ -146,14 +154,7 @@ export const MainScreen: React.FC = () => {
               })
             }
           >
-            <GraphIcon
-              css={{
-                fill: "var( --primary-color )",
-                width: "100%",
-                height: "100%",
-                margin: 4,
-              }}
-            />
+            <GraphIcon />
           </AppIcon>
           <AppIcon
             onClick={() =>
@@ -163,14 +164,7 @@ export const MainScreen: React.FC = () => {
               })
             }
           >
-            <MicrophoneIcon
-              css={{
-                fill: "var( --primary-color )",
-                width: "100%",
-                height: "100%",
-                margin: 4,
-              }}
-            />
+            <MicrophoneIcon />
           </AppIcon>
           <AppIcon
             onClick={() =>
@@ -180,14 +174,7 @@ export const MainScreen: React.FC = () => {
               })
             }
           >
-            <CameraIcon
-              css={{
-                fill: "var( --primary-color )",
-                width: "100%",
-                height: "100%",
-                margin: 4,
-              }}
-            />
+            <CameraIcon />
           </AppIcon>
           <AppIcon
             onClick={() =>
@@ -197,14 +184,7 @@ export const MainScreen: React.FC = () => {
               })
             }
           >
-            <CodeIcon
-              css={{
-                fill: "var( --primary-color )",
-                width: "100%",
-                height: "100%",
-                margin: 4,
-              }}
-            />
+            <CodeIcon />
           </AppIcon>
           <AppIcon
             onClick={() =>
@@ -214,14 +194,7 @@ export const MainScreen: React.FC = () => {
               })
             }
           >
-            <ConsoleIcon
-              css={{
-                fill: "var( --primary-color )",
-                width: "100%",
-                height: "100%",
-                margin: 4,
-              }}
-            />
+            <ConsoleIcon />
           </AppIcon>
           <AppIcon
             onClick={() =>
@@ -231,14 +204,7 @@ export const MainScreen: React.FC = () => {
               })
             }
           >
-            <MapIcon
-              css={{
-                fill: "var( --primary-color )",
-                width: "100%",
-                height: "100%",
-                margin: 4,
-              }}
-            />
+            <MapIcon />
           </AppIcon>
           <AppIcon
             onClick={() =>
@@ -248,14 +214,7 @@ export const MainScreen: React.FC = () => {
               })
             }
           >
-            <RadarIcon
-              css={{
-                fill: "var( --primary-color )",
-                width: "100%",
-                height: "100%",
-                margin: 4,
-              }}
-            />
+            <RadarIcon />
           </AppIcon>
           <AppIcon
             onClick={() =>
@@ -265,66 +224,66 @@ export const MainScreen: React.FC = () => {
               })
             }
           >
-            <WireFrameIcon
-              css={{
-                fill: "var( --primary-color )",
-                width: "100%",
-                height: "100%",
-                margin: 4,
-              }}
-            />
+            <WireFrameIcon />
+          </AppIcon>
+          <div css={{ flex: 1 }} />
+          <AppIcon as={Link} to="/dashboard">
+            <DashboardIcon />
           </AppIcon>
         </div>
         <div
           css={{
             flex: 1,
+            position: "relative",
+            overflow: "clip",
           }}
-        ></div>
-      </div>
-      {apps.map((a) => {
-        let content: NonNullable<React.ReactNode>;
-        if (a.type === "audioAnalyzer") {
-          content = <AudioAnalyzer />;
-        } else if (a.type === "cameras") {
-          content = <Cameras />;
-        } else if (a.type === "coder") {
-          content = <Coder />;
-        } else if (a.type === "console") {
-          content = <Console {...a.props} />;
-        } else if (a.type === "graph") {
-          content = <Graph {...a.props} />;
-        } else if (a.type === "map") {
-          content = <Map {...a.props} />;
-        } else if (a.type === "radar") {
-          content = <Radar />;
-        } else if (a.type === "wireFrame") {
-          content = <WireFrame />;
-        } else {
-          assertNever(a);
-        }
+        >
+          {apps.map((a) => {
+            let content: NonNullable<React.ReactNode>;
+            if (a.type === "audioAnalyzer") {
+              content = <AudioAnalyzer />;
+            } else if (a.type === "cameras") {
+              content = <Cameras />;
+            } else if (a.type === "coder") {
+              content = <Coder />;
+            } else if (a.type === "console") {
+              content = <Console {...a.props} />;
+            } else if (a.type === "graph") {
+              content = <Graph {...a.props} />;
+            } else if (a.type === "map") {
+              content = <Map {...a.props} />;
+            } else if (a.type === "radar") {
+              content = <Radar />;
+            } else if (a.type === "wireFrame") {
+              content = <WireFrame />;
+            } else {
+              assertNever(a);
+            }
 
-        return (
-          <DialogWindow
-            key={a.id}
-            open={true}
-            onClose={() => {
-              setApps((apps) => apps.filter((ap) => ap.id !== a.id));
-            }}
-            initialPosition={nextInitialPosition}
-            zIndex={a.zIndex}
-            onWindowFocus={() => {
-              setApps((apps) =>
-                apps.map((ap) =>
-                  ap.id === a.id ? { ...ap, zIndex: nextZIndex } : ap
-                )
-              );
-              setNextZIndex((z) => z + 1);
-            }}
-          >
-            {content}
-          </DialogWindow>
-        );
-      })}
+            return (
+              <DialogWindow
+                key={a.id}
+                open={true}
+                onClose={() => {
+                  setApps((apps) => apps.filter((ap) => ap.id !== a.id));
+                }}
+                initialPosition={nextInitialPosition}
+                zIndex={a.zIndex}
+                onWindowFocus={() => {
+                  setApps((apps) =>
+                    apps.map((ap) =>
+                      ap.id === a.id ? { ...ap, zIndex: nextZIndex } : ap
+                    )
+                  );
+                  setNextZIndex((z) => z + 1);
+                }}
+              >
+                {content}
+              </DialogWindow>
+            );
+          })}
+        </div>
+      </div>
     </>
   );
 };

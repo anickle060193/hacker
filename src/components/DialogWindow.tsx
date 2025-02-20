@@ -1,5 +1,4 @@
 import React from "react";
-import { createPortal } from "react-dom";
 
 interface Position {
   x: number;
@@ -23,7 +22,7 @@ export const DialogWindow: React.FC<Props> = ({
   onWindowFocus,
   children,
 }) => {
-  const [dragOffset, setDragOffset] = React.useState<Position | null>(null);
+  const [dragging, setDragging] = React.useState(false);
   const [resizing, setResizing] = React.useState(false);
 
   const [position, setPosition] = React.useState<Position>(
@@ -35,16 +34,16 @@ export const DialogWindow: React.FC<Props> = ({
   });
 
   React.useEffect(() => {
-    if (!(dragOffset || resizing)) {
+    if (!(dragging || resizing)) {
       return;
     }
 
     function onMouseMove(e: MouseEvent) {
-      if (dragOffset) {
-        setPosition({
-          x: e.clientX - dragOffset.x,
-          y: e.clientY - dragOffset.y,
-        });
+      if (dragging) {
+        setPosition((p) => ({
+          x: p.x + e.movementX,
+          y: p.y + e.movementY,
+        }));
       } else if (resizing) {
         setSize((s) => ({
           x: s.x + e.movementX,
@@ -54,7 +53,7 @@ export const DialogWindow: React.FC<Props> = ({
     }
 
     function onMouseUp() {
-      setDragOffset(null);
+      setDragging(false);
       setResizing(false);
     }
 
@@ -65,13 +64,13 @@ export const DialogWindow: React.FC<Props> = ({
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("mouseup", onMouseUp);
     };
-  }, [dragOffset, resizing]);
+  }, [dragging, resizing]);
 
   if (!open) {
     return null;
   }
 
-  return createPortal(
+  return (
     <div
       css={{
         position: "absolute",
@@ -110,11 +109,7 @@ export const DialogWindow: React.FC<Props> = ({
 
           e.preventDefault();
 
-          const box = e.currentTarget.getBoundingClientRect();
-          setDragOffset({
-            x: e.clientX - box.x,
-            y: e.clientY - box.y,
-          });
+          setDragging(true);
         }}
         onAuxClick={(e) => {
           if (e.button !== 1) {
@@ -183,7 +178,6 @@ export const DialogWindow: React.FC<Props> = ({
           setResizing(true);
         }}
       ></div>
-    </div>,
-    document.body
+    </div>
   );
 };
