@@ -55,17 +55,19 @@ export const Cameras: React.FC = () => {
         position: "relative",
       }}
     >
-      <video
-        ref={setVideo}
-        css={{
-          width: "100%",
-          height: "100%",
-          objectFit: "cover",
-          filter: "grayscale( 100% ) brightness( 50% )",
-        }}
-        autoPlay={load}
-        controls={false}
-      />
+      {load && (
+        <video
+          ref={setVideo}
+          css={{
+            width: "100%",
+            height: "100%",
+            objectFit: "cover",
+            filter: "grayscale( 100% ) brightness( 50% )",
+          }}
+          autoPlay={true}
+          controls={false}
+        />
+      )}
       <div
         css={{
           position: "absolute",
