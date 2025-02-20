@@ -227,9 +227,16 @@ export const MainScreen: React.FC = () => {
             <WireFrameIcon />
           </AppIcon>
           <div css={{ flex: 1 }} />
-          <AppIcon as={Link} to="/dashboard">
-            <DashboardIcon />
-          </AppIcon>
+          <Link
+            to="/dashboard"
+            css={{
+              display: "block",
+            }}
+          >
+            <AppIcon>
+              <DashboardIcon />
+            </AppIcon>
+          </Link>
         </div>
         <div
           css={{
