@@ -6,7 +6,7 @@ import { useRandomInterval } from "../../hooks/useRandomInterval";
 import { assertNever } from "../../utils";
 
 const SPEEDS: Record<
-  NonNullable<ConsoleProps["speed"]>,
+  NonNullable<LogProps["speed"]>,
   [min: number, max: number]
 > = {
   fast: [50, 100],
@@ -18,15 +18,12 @@ interface Datum {
   text: string;
 }
 
-export interface ConsoleProps {
+export interface LogProps {
   speed?: "fast" | "normal";
   variant?: "chat" | "data";
 }
 
-const Console: React.FC<ConsoleProps> = ({
-  speed = "normal",
-  variant = "chat",
-}) => {
+const Log: React.FC<LogProps> = ({ speed = "normal", variant = "chat" }) => {
   const [data, setData] = React.useState<Datum[]>([]);
 
   const appendData = React.useCallback((message: string) => {
@@ -80,4 +77,4 @@ const Console: React.FC<ConsoleProps> = ({
   );
 };
 
-export default Console;
+export default Log;

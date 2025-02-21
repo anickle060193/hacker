@@ -3,7 +3,7 @@ import { Link } from "react-router";
 
 import { Cell } from "../components/Cell";
 import { Graph } from "../components/Graph";
-import { Console } from "../components/Console";
+import { Log } from "../components/Log";
 import { Coder } from "../components/Coder";
 import { Map } from "../components/Map";
 import { WireFrame } from "../components/WireFrame";
@@ -48,7 +48,7 @@ export const DashboardScreen: React.FC = () => {
         <Graph variant="bar" algorithm="sine" />
       </Cell>
       <Cell>
-        <Console speed="fast" variant="data" />
+        <Log speed="fast" variant="data" />
       </Cell>
       <Cell>
         <Cameras />
@@ -61,7 +61,7 @@ export const DashboardScreen: React.FC = () => {
         <Graph variant="bar" algorithm="random" />
       </Cell>
       <Cell>
-        <Console speed="normal" variant="chat" />
+        <Log speed="normal" variant="chat" />
       </Cell>
 
       <Cell css={{ gridColumn: "span 2" }}>

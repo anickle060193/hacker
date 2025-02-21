@@ -6,7 +6,7 @@ import { Link } from "react-router";
 import { AudioAnalyzer } from "../components/AudioAnalyzer";
 import { Cameras } from "../components/Cameras";
 import { Coder } from "../components/Coder";
-import { Console, ConsoleProps } from "../components/Console";
+import { Log, LogProps } from "../components/Log";
 import {
   DialogWindow,
   DialogWindowPosition,
@@ -23,7 +23,7 @@ import { randomBetween, randomChoice } from "../utils/random";
 import MicrophoneIcon from "../assets/microphone.svg?react";
 import CameraIcon from "../assets/security-camera.svg?react";
 import CodeIcon from "../assets/code.svg?react";
-import ConsoleIcon from "../assets/console.svg?react";
+import LogIcon from "../assets/log.svg?react";
 import MapIcon from "../assets/map.svg?react";
 import RadarIcon from "../assets/radar.svg?react";
 import WireFrameIcon from "../assets/wireframe.svg?react";
@@ -66,7 +66,7 @@ interface AppPropsMapping {
   audioAnalyzer: Record<string, never>;
   cameras: Record<string, never>;
   coder: Record<string, never>;
-  console: ConsoleProps;
+  log: LogProps;
   graph: GraphProps;
   map: Record<string, never>;
   radar: Record<string, never>;
@@ -99,19 +99,19 @@ const APP_TYPES = keysToArray<AppType>({
   audioAnalyzer: false,
   cameras: false,
   coder: false,
-  console: false,
+  log: false,
   graph: false,
   map: false,
   radar: false,
   wireFrame: false,
 });
 
-const CONSOLE_SPEEDS = keysToArray<NonNullable<ConsoleProps["speed"]>>({
+const LOG_SPEEDS = keysToArray<NonNullable<LogProps["speed"]>>({
   fast: false,
   normal: false,
 });
 
-const CONSOLE_VARIANTS = keysToArray<NonNullable<ConsoleProps["variant"]>>({
+const LOG_VARIANTS = keysToArray<NonNullable<LogProps["variant"]>>({
   data: false,
   chat: false,
 });
@@ -143,12 +143,12 @@ function generateApp(appType: AppType): BaseApp {
       type: appType,
       props: {},
     };
-  } else if (appType === "console") {
+  } else if (appType === "log") {
     return {
       type: appType,
       props: {
-        speed: randomChoice(CONSOLE_SPEEDS),
-        variant: randomChoice(CONSOLE_VARIANTS),
+        speed: randomChoice(LOG_SPEEDS),
+        variant: randomChoice(LOG_VARIANTS),
       },
     };
   } else if (appType === "graph") {
@@ -321,8 +321,8 @@ export const MainScreen: React.FC = () => {
           <AppIcon onClick={() => addApp(generateApp("coder"))}>
             <CodeIcon />
           </AppIcon>
-          <AppIcon onClick={() => addApp(generateApp("console"))}>
-            <ConsoleIcon />
+          <AppIcon onClick={() => addApp(generateApp("log"))}>
+            <LogIcon />
           </AppIcon>
           <AppIcon onClick={() => addApp(generateApp("map"))}>
             <MapIcon />
@@ -373,8 +373,8 @@ export const MainScreen: React.FC = () => {
               content = <Cameras />;
             } else if (a.type === "coder") {
               content = <Coder />;
-            } else if (a.type === "console") {
-              content = <Console {...a.props} />;
+            } else if (a.type === "log") {
+              content = <Log {...a.props} />;
             } else if (a.type === "graph") {
               content = <Graph {...a.props} />;
             } else if (a.type === "map") {
