@@ -7,13 +7,17 @@ import { AudioAnalyzer } from "../components/AudioAnalyzer";
 import { Cameras } from "../components/Cameras";
 import { Coder } from "../components/Coder";
 import { Console, ConsoleProps } from "../components/Console";
-import { DialogWindow } from "../components/DialogWindow";
+import {
+  DialogWindow,
+  DialogWindowPosition,
+  DialogWindowSize,
+} from "../components/DialogWindow";
 import { Graph, GraphProps } from "../components/Graph";
 import { Map } from "../components/Map";
 import { Radar } from "../components/Radar";
 import { WireFrame } from "../components/WireFrame";
 
-import { assertNever } from "../utils";
+import { assertNever, keysToArray, sleep } from "../utils";
 import { randomBetween, randomChoice } from "../utils/random";
 
 import MicrophoneIcon from "../assets/microphone.svg?react";
@@ -25,6 +29,7 @@ import RadarIcon from "../assets/radar.svg?react";
 import WireFrameIcon from "../assets/wireframe.svg?react";
 import GraphIcon from "../assets/graph.svg?react";
 import DashboardIcon from "../assets/dashboard.svg?react";
+import WindowsIcon from "../assets/windows.svg?react";
 
 const AppIcon = styled("div")({
   width: "3rem",
@@ -68,56 +73,218 @@ interface AppPropsMapping {
   wireFrame: Record<string, never>;
 }
 
+type AppType = keyof AppPropsMapping;
+
 type BaseApp = {
-  [K in keyof AppPropsMapping]: {
+  [K in AppType]: {
     type: K;
     props: AppPropsMapping[K];
   };
-}[keyof AppPropsMapping];
+}[AppType];
 
-type App = {
+interface AppWindowParams {
   id: string;
   zIndex: number;
-} & BaseApp;
+  position: DialogWindowPosition;
+  size: DialogWindowSize;
+}
+
+type App = AppWindowParams & BaseApp;
+
+const INITIAL_WINDOW_STARTING_Z_INDEX = 0;
+const INITIAL_WINDOW_STARTING_POSITION: DialogWindowPosition = { x: 40, y: 20 };
+const INITIAL_WINDOW_SIZE: DialogWindowSize = { width: 400, height: 300 };
+
+const APP_TYPES = keysToArray<AppType>({
+  audioAnalyzer: false,
+  cameras: false,
+  coder: false,
+  console: false,
+  graph: false,
+  map: false,
+  radar: false,
+  wireFrame: false,
+});
+
+const CONSOLE_SPEEDS = keysToArray<NonNullable<ConsoleProps["speed"]>>({
+  fast: false,
+  normal: false,
+});
+
+const CONSOLE_VARIANTS = keysToArray<NonNullable<ConsoleProps["variant"]>>({
+  data: false,
+  chat: false,
+});
+
+const GRAPH_ALGORITHMS = keysToArray<NonNullable<GraphProps["algorithm"]>>({
+  random: false,
+  smooth: false,
+  sine: false,
+});
+
+const GRAPH_VARIANTS = keysToArray<NonNullable<GraphProps["variant"]>>({
+  bar: false,
+  pointy: false,
+});
+
+function generateApp(appType: AppType): BaseApp {
+  if (appType === "audioAnalyzer") {
+    return {
+      type: appType,
+      props: {},
+    };
+  } else if (appType === "cameras") {
+    return {
+      type: appType,
+      props: {},
+    };
+  } else if (appType === "coder") {
+    return {
+      type: appType,
+      props: {},
+    };
+  } else if (appType === "console") {
+    return {
+      type: appType,
+      props: {
+        speed: randomChoice(CONSOLE_SPEEDS),
+        variant: randomChoice(CONSOLE_VARIANTS),
+      },
+    };
+  } else if (appType === "graph") {
+    return {
+      type: appType,
+      props: {
+        algorithm: randomChoice(GRAPH_ALGORITHMS),
+        count: randomBetween(32, 128),
+        variant: randomChoice(GRAPH_VARIANTS),
+      },
+    };
+  } else if (appType === "map") {
+    return {
+      type: appType,
+      props: {},
+    };
+  } else if (appType === "radar") {
+    return {
+      type: appType,
+      props: {},
+    };
+  } else if (appType === "wireFrame") {
+    return {
+      type: appType,
+      props: {},
+    };
+  } else {
+    assertNever(appType);
+  }
+}
 
 export const MainScreen: React.FC = () => {
   const containerRef = React.useRef<HTMLDivElement | null>(null);
 
+  const nextInitialPositionRef = React.useRef(INITIAL_WINDOW_STARTING_POSITION);
+  const nextZIndexRef = React.useRef(INITIAL_WINDOW_STARTING_Z_INDEX);
+
   const [apps, setApps] = React.useState<App[]>([]);
-  const [nextInitialPosition, setNextInitialPosition] = React.useState<{
-    x: number;
-    y: number;
-  }>({ x: 0, y: 0 });
-  const [nextZIndex, setNextZIndex] = React.useState(0);
 
-  function addApp(app: BaseApp) {
-    let { x, y } = nextInitialPosition;
+  React.useEffect(() => {
     if (apps.length === 0) {
-      x = 80;
-      y = 20;
-    } else {
-      x += 20;
-      y += 20;
+      nextInitialPositionRef.current = INITIAL_WINDOW_STARTING_POSITION;
+      nextZIndexRef.current = INITIAL_WINDOW_STARTING_Z_INDEX;
+    }
+  }, [apps.length]);
 
-      if (containerRef.current) {
-        if (y >= containerRef.current.clientHeight * 0.5) {
-          y = 20;
-        }
+  function addApp(baseApp: BaseApp) {
+    const { x, y } = nextInitialPositionRef.current;
+    const zIndex = nextZIndexRef.current + 1;
+
+    setApps((oldApps) => [
+      ...oldApps,
+      {
+        id: crypto.randomUUID(),
+        zIndex: zIndex,
+        position: { x, y },
+        size: INITIAL_WINDOW_SIZE,
+        ...baseApp,
+      },
+    ]);
+
+    let nextX = x;
+    let nextY = y;
+
+    nextX += 40;
+    nextY += 40;
+
+    if (containerRef.current) {
+      if (nextY >= containerRef.current.clientHeight * 0.5) {
+        nextY = INITIAL_WINDOW_STARTING_POSITION.y;
       }
     }
 
-    setNextInitialPosition({ x, y });
-    setNextZIndex((z) => z + 1);
-
-    setApps([
-      ...apps,
-      {
-        id: crypto.randomUUID(),
-        zIndex: nextZIndex,
-        ...app,
-      },
-    ]);
+    nextInitialPositionRef.current = { x: nextX, y: nextY };
+    nextZIndexRef.current += 1;
   }
+
+  const updateApp = React.useCallback(
+    (
+      windowId: string,
+      callback: (oldParams: AppWindowParams) => Partial<AppWindowParams>
+    ) => {
+      setApps((oldApps) => {
+        const newApps = [...oldApps];
+        const index = newApps.findIndex((a) => a.id === windowId);
+        if (index >= 0) {
+          newApps[index] = {
+            ...newApps[index],
+            ...callback(newApps[index]),
+          };
+        }
+        return newApps;
+      });
+    },
+    []
+  );
+
+  const onWindowClose = React.useCallback((windowId: string) => {
+    setApps((oldApps) => oldApps.filter((a) => a.id !== windowId));
+  }, []);
+
+  const onWindowFocus = React.useCallback(
+    (windowId: string) => {
+      const zIndex = nextZIndexRef.current;
+      nextZIndexRef.current += 1;
+
+      updateApp(windowId, () => ({
+        zIndex,
+      }));
+    },
+    [updateApp]
+  );
+
+  const onWindowDrag = React.useCallback(
+    (windowId: string, positionDiff: DialogWindowPosition) => {
+      updateApp(windowId, (p) => ({
+        position: {
+          x: p.position.x + positionDiff.x,
+          y: p.position.y + positionDiff.y,
+        },
+      }));
+    },
+    [updateApp]
+  );
+
+  const onWindowResize = React.useCallback(
+    (windowId: string, sizeDiff: DialogWindowSize) => {
+      updateApp(windowId, (p) => ({
+        size: {
+          width: p.size.width + sizeDiff.width,
+          height: p.size.height + sizeDiff.height,
+        },
+      }));
+    },
+    [updateApp]
+  );
 
   return (
     <>
@@ -142,91 +309,44 @@ export const MainScreen: React.FC = () => {
             gap: 8,
           }}
         >
-          <AppIcon
-            onClick={() =>
-              addApp({
-                type: "graph",
-                props: {
-                  algorithm: randomChoice(["random", "smooth", "sine"]),
-                  count: randomBetween(32, 128),
-                  variant: randomChoice(["bar", "pointy"]),
-                },
-              })
-            }
-          >
+          <AppIcon onClick={() => addApp(generateApp("graph"))}>
             <GraphIcon />
           </AppIcon>
-          <AppIcon
-            onClick={() =>
-              addApp({
-                type: "audioAnalyzer",
-                props: {},
-              })
-            }
-          >
+          <AppIcon onClick={() => addApp(generateApp("audioAnalyzer"))}>
             <MicrophoneIcon />
           </AppIcon>
-          <AppIcon
-            onClick={() =>
-              addApp({
-                type: "cameras",
-                props: {},
-              })
-            }
-          >
+          <AppIcon onClick={() => addApp(generateApp("cameras"))}>
             <CameraIcon />
           </AppIcon>
-          <AppIcon
-            onClick={() =>
-              addApp({
-                type: "coder",
-                props: {},
-              })
-            }
-          >
+          <AppIcon onClick={() => addApp(generateApp("coder"))}>
             <CodeIcon />
           </AppIcon>
-          <AppIcon
-            onClick={() =>
-              addApp({
-                type: "console",
-                props: {},
-              })
-            }
-          >
+          <AppIcon onClick={() => addApp(generateApp("console"))}>
             <ConsoleIcon />
           </AppIcon>
-          <AppIcon
-            onClick={() =>
-              addApp({
-                type: "map",
-                props: {},
-              })
-            }
-          >
+          <AppIcon onClick={() => addApp(generateApp("map"))}>
             <MapIcon />
           </AppIcon>
-          <AppIcon
-            onClick={() =>
-              addApp({
-                type: "radar",
-                props: {},
-              })
-            }
-          >
+          <AppIcon onClick={() => addApp(generateApp("radar"))}>
             <RadarIcon />
           </AppIcon>
-          <AppIcon
-            onClick={() =>
-              addApp({
-                type: "wireFrame",
-                props: {},
-              })
-            }
-          >
+          <AppIcon onClick={() => addApp(generateApp("wireFrame"))}>
             <WireFrameIcon />
           </AppIcon>
           <div css={{ flex: 1 }} />
+          <AppIcon
+            onClick={async () => {
+              for (let i = 0; i < 10; i++) {
+                const appType = randomChoice(APP_TYPES);
+                const app = generateApp(appType);
+                addApp(app);
+
+                await sleep(200);
+              }
+            }}
+          >
+            <WindowsIcon />
+          </AppIcon>
           <Link
             to="/dashboard"
             css={{
@@ -270,20 +390,15 @@ export const MainScreen: React.FC = () => {
             return (
               <DialogWindow
                 key={a.id}
+                windowId={a.id}
                 open={true}
-                onClose={() => {
-                  setApps((apps) => apps.filter((ap) => ap.id !== a.id));
-                }}
-                initialPosition={nextInitialPosition}
+                size={a.size}
+                position={a.position}
                 zIndex={a.zIndex}
-                onWindowFocus={() => {
-                  setApps((apps) =>
-                    apps.map((ap) =>
-                      ap.id === a.id ? { ...ap, zIndex: nextZIndex } : ap
-                    )
-                  );
-                  setNextZIndex((z) => z + 1);
-                }}
+                onClose={onWindowClose}
+                onWindowFocus={onWindowFocus}
+                onWindowDrag={onWindowDrag}
+                onWindowResize={onWindowResize}
               >
                 {content}
               </DialogWindow>

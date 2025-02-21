@@ -1,37 +1,42 @@
 import React from "react";
 
-interface Position {
-  x: number;
-  y: number;
+export interface DialogWindowPosition {
+  readonly x: number;
+  readonly y: number;
+}
+
+export interface DialogWindowSize {
+  readonly width: number;
+  readonly height: number;
 }
 
 interface Props {
+  windowId: string;
   open: boolean;
-  onClose: () => void;
-  zIndex?: number;
-  initialPosition?: Position;
-  onWindowFocus: () => void;
+  zIndex: number;
+  size: DialogWindowSize;
+  position: DialogWindowPosition;
+  onClose: (windowId: string) => void;
+  onWindowFocus: (windowId: string) => void;
+  onWindowDrag: (windowId: string, diff: DialogWindowPosition) => void;
+  onWindowResize: (windowId: string, diff: DialogWindowSize) => void;
   children?: React.ReactNode;
 }
 
 export const DialogWindow: React.FC<Props> = ({
+  windowId,
   open,
-  onClose,
   zIndex,
-  initialPosition,
+  size,
+  position,
+  onClose,
   onWindowFocus,
+  onWindowDrag,
+  onWindowResize,
   children,
 }) => {
   const [dragging, setDragging] = React.useState(false);
   const [resizing, setResizing] = React.useState(false);
-
-  const [position, setPosition] = React.useState<Position>(
-    initialPosition ?? { x: 100, y: 100 }
-  );
-  const [size, setSize] = React.useState<Position>({
-    x: 300,
-    y: 200,
-  });
 
   React.useEffect(() => {
     if (!(dragging || resizing)) {
@@ -40,15 +45,15 @@ export const DialogWindow: React.FC<Props> = ({
 
     function onMouseMove(e: MouseEvent) {
       if (dragging) {
-        setPosition((p) => ({
-          x: p.x + e.movementX,
-          y: p.y + e.movementY,
-        }));
+        onWindowDrag(windowId, {
+          x: e.movementX,
+          y: e.movementY,
+        });
       } else if (resizing) {
-        setSize((s) => ({
-          x: s.x + e.movementX,
-          y: s.y + e.movementY,
-        }));
+        onWindowResize(windowId, {
+          width: e.movementX,
+          height: e.movementY,
+        });
       }
     }
 
@@ -64,7 +69,7 @@ export const DialogWindow: React.FC<Props> = ({
       window.removeEventListener("mousemove", onMouseMove);
       window.removeEventListener("mouseup", onMouseUp);
     };
-  }, [dragging, resizing]);
+  }, [windowId, onWindowDrag, onWindowResize, dragging, resizing]);
 
   if (!open) {
     return null;
@@ -83,13 +88,13 @@ export const DialogWindow: React.FC<Props> = ({
         flexDirection: "column",
       }}
       style={{
-        width: Math.max(100, size.x),
-        height: Math.max(100, size.y),
+        width: Math.max(100, size.width),
+        height: Math.max(100, size.height),
         transform: `translate( ${position.x.toFixed()}px, ${position.y.toFixed()}px )`,
         zIndex: zIndex,
       }}
       onMouseDownCapture={() => {
-        onWindowFocus();
+        onWindowFocus(windowId);
       }}
     >
       <div
@@ -116,7 +121,7 @@ export const DialogWindow: React.FC<Props> = ({
             return;
           }
 
-          onClose();
+          onClose(windowId);
         }}
       >
         <button
@@ -136,7 +141,7 @@ export const DialogWindow: React.FC<Props> = ({
               opacity: 0.5,
             },
           }}
-          onClick={() => onClose()}
+          onClick={() => onClose(windowId)}
         >
           <svg
             viewBox="0 0 20 20"
