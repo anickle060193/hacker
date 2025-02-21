@@ -2,7 +2,7 @@ import React from "react";
 
 import { useRandomInterval } from "../hooks/useRandomInterval";
 
-import WorldSvg from "../assets/world.svg?react";
+const WorldSvg = React.lazy(() => import("../assets/world.svg?react"));
 
 export const Map: React.FC = () => {
   const [coord, setCoord] = React.useState({ x: 0.5, y: 0.5 });
@@ -14,22 +14,26 @@ export const Map: React.FC = () => {
   return (
     <div
       css={{
+        width: "100%",
+        height: "100%",
         position: "relative",
         overflow: "hidden",
       }}
     >
-      <WorldSvg
-        css={{
-          width: "100%",
-          height: "100%",
-          fill: "transparent",
-          stroke: "var( --primary-color )",
-          strokeWidth: 1,
-          "& > path:hover": {
-            fill: `hsl(from var( --primary-color ) h s l / 0.5)`,
-          },
-        }}
-      />
+      <React.Suspense>
+        <WorldSvg
+          css={{
+            width: "100%",
+            height: "100%",
+            fill: "transparent",
+            stroke: "var( --primary-color )",
+            strokeWidth: 1,
+            "& > path:hover": {
+              fill: `hsl(from var( --primary-color ) h s l / 0.5)`,
+            },
+          }}
+        />
+      </React.Suspense>
       <div
         css={{
           position: "absolute",

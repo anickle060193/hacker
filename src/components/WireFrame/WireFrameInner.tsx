@@ -36,7 +36,7 @@ const CAMERA_HEIGHT = BOX_MIN_HEIGHT * 0.5;
 
 const ROTATE_DURATION = 1;
 
-export const WireFrame: React.FC = () => {
+const WireFrameInner: React.FC = () => {
   const [canvas, setCanvas] = React.useState<HTMLCanvasElement | null>(null);
 
   React.useEffect(() => {
@@ -291,3 +291,5 @@ export const WireFrame: React.FC = () => {
     />
   );
 };
+
+export default WireFrameInner;

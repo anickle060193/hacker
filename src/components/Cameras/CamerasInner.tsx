@@ -12,7 +12,7 @@ const URLS = [
   "https://cdn3.wowza.com/5/TkUxaGpnVUNpME1Z/KDOT/5-054-2129-2-US-54atWestSt.stream/chunklist.m3u8",
 ];
 
-export const Cameras: React.FC = () => {
+const CamerasInner: React.FC = () => {
   const [url] = React.useState(
     () => URLS[Math.floor(Math.random() * URLS.length)]
   );
@@ -24,6 +24,7 @@ export const Cameras: React.FC = () => {
     if (!video || !load) {
       return;
     }
+
     const vid = video;
 
     function onPausedChanged() {
@@ -112,3 +113,5 @@ export const Cameras: React.FC = () => {
     </div>
   );
 };
+
+export default CamerasInner;

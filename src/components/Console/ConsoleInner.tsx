@@ -1,9 +1,9 @@
 import React from "react";
-import { faker } from "@faker-js/faker";
+import { faker } from "@faker-js/faker/locale/en";
 
-import { useRandomInterval } from "../hooks/useRandomInterval";
+import { useRandomInterval } from "../../hooks/useRandomInterval";
 
-import { assertNever } from "../utils";
+import { assertNever } from "../../utils";
 
 const SPEEDS: Record<
   NonNullable<ConsoleProps["speed"]>,
@@ -23,7 +23,7 @@ export interface ConsoleProps {
   variant?: "chat" | "data";
 }
 
-export const Console: React.FC<ConsoleProps> = ({
+const Console: React.FC<ConsoleProps> = ({
   speed = "normal",
   variant = "chat",
 }) => {
@@ -79,3 +79,5 @@ export const Console: React.FC<ConsoleProps> = ({
     </div>
   );
 };
+
+export default Console;
