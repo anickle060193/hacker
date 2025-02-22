@@ -20,9 +20,10 @@ export const DashboardScreen: React.FC = () => {
       css={{
         display: "grid",
         padding: "1rem",
-        gridTemplateColumns: "repeat(auto-fill, minmax( 300px, 1fr ) )",
-        gridAutoRows: "200px",
-        gap: 10,
+        gridTemplateColumns: "repeat( auto-fill, minmax( 300px, 1fr ) )",
+        gridAutoRows: "250px",
+        gap: "10px",
+        containerType: "size",
       }}
     >
       <Cell>
@@ -65,7 +66,13 @@ export const DashboardScreen: React.FC = () => {
         <Log speed="normal" variant="chat" />
       </Cell>
 
-      <Cell css={{ gridColumn: "span 2" }}>
+      <Cell
+        css={{
+          "@container (min-width: 600px)": {
+            gridColumn: "span 2",
+          },
+        }}
+      >
         <Coder />
       </Cell>
       <Cell>
