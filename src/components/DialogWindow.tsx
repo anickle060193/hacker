@@ -103,7 +103,6 @@ export const DialogWindow: React.FC<Props> = ({
           display: "flex",
           flexDirection: "row",
           alignItems: "center",
-          justifyContent: "flex-end",
           padding: 4,
           gap: 4,
         }}
@@ -124,6 +123,7 @@ export const DialogWindow: React.FC<Props> = ({
           onClose(windowId);
         }}
       >
+        <div css={{ flex: 1 }} />
         <button
           css={{
             appearance: "none",
