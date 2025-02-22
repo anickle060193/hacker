@@ -1,9 +1,9 @@
 import React from "react";
 
-import { useRandomInterval } from "../hooks/useRandomInterval";
+import { useRandomInterval } from "../../hooks/useRandomInterval";
 
-import { randomBetween } from "../utils/random";
-import { assertNever } from "../utils";
+import { randomBetween } from "../../utils/random";
+import { assertNever } from "../../utils";
 
 export interface GraphProps {
   count?: number;

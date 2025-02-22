@@ -1,6 +1,6 @@
 import React from "react";
 
-import MicrophoneIcon from "../assets/microphone.svg?react";
+import MicrophoneIcon from "../../assets/microphone.svg?react";
 
 export const AudioAnalyzer: React.FC = () => {
   const [canvas, setCanvas] = React.useState<HTMLCanvasElement | null>(null);

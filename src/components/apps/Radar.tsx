@@ -1,7 +1,7 @@
 import React from "react";
 import { keyframes } from "@emotion/react";
 
-import { useRandomInterval } from "../hooks/useRandomInterval";
+import { useRandomInterval } from "../../hooks/useRandomInterval";
 
 const RING_RADII = [1.0, 0.75, 0.5, 0.25];
 

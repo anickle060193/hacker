@@ -2,14 +2,15 @@ import React from "react";
 import { Link } from "react-router";
 
 import { Cell } from "../components/Cell";
-import { Graph } from "../components/Graph";
-import { Log } from "../components/Log";
-import { Coder } from "../components/Coder";
-import { Map } from "../components/Map";
-import { WireFrame } from "../components/WireFrame";
-import { AudioAnalyzer } from "../components/AudioAnalyzer";
-import { Cameras } from "../components/Cameras";
-import { Radar } from "../components/Radar";
+
+import { Graph } from "../components/apps/Graph";
+import { Log } from "../components/apps/Log";
+import { Coder } from "../components/apps/Coder";
+import { Map } from "../components/apps/Map";
+import { WireFrame } from "../components/apps/WireFrame";
+import { AudioAnalyzer } from "../components/apps/AudioAnalyzer";
+import { Cameras } from "../components/apps/Cameras";
+import { Radar } from "../components/apps/Radar";
 
 import HomeIcon from "../assets/home.svg?react";
 

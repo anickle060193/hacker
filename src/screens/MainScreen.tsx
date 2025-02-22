@@ -3,19 +3,19 @@ import { Global } from "@emotion/react";
 import styled from "@emotion/styled";
 import { Link } from "react-router";
 
-import { AudioAnalyzer } from "../components/AudioAnalyzer";
-import { Cameras } from "../components/Cameras";
-import { Coder } from "../components/Coder";
-import { Log, LogProps } from "../components/Log";
 import {
   DialogWindow,
   DialogWindowPosition,
   DialogWindowSize,
 } from "../components/DialogWindow";
-import { Graph, GraphProps } from "../components/Graph";
-import { Map } from "../components/Map";
-import { Radar } from "../components/Radar";
-import { WireFrame } from "../components/WireFrame";
+import { AudioAnalyzer } from "../components/apps/AudioAnalyzer";
+import { Cameras } from "../components/apps/Cameras";
+import { Coder } from "../components/apps/Coder";
+import { Log, LogProps } from "../components/apps/Log";
+import { Graph, GraphProps } from "../components/apps/Graph";
+import { Map } from "../components/apps/Map";
+import { Radar } from "../components/apps/Radar";
+import { WireFrame } from "../components/apps/WireFrame";
 
 import { assertNever, keysToArray, sleep } from "../utils";
 import { randomBetween, randomChoice } from "../utils/random";

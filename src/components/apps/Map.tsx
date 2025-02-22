@@ -1,8 +1,8 @@
 import React from "react";
 
-import { useRandomInterval } from "../hooks/useRandomInterval";
+import { useRandomInterval } from "../../hooks/useRandomInterval";
 
-const WorldSvg = React.lazy(() => import("../assets/world.svg?react"));
+const WorldSvg = React.lazy(() => import("../../assets/world.svg?react"));
 
 export const Map: React.FC = () => {
   const [coord, setCoord] = React.useState({ x: 0.5, y: 0.5 });

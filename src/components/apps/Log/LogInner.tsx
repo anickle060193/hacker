@@ -1,9 +1,9 @@
 import React from "react";
 import { faker } from "@faker-js/faker/locale/en";
 
-import { useRandomInterval } from "../../hooks/useRandomInterval";
+import { useRandomInterval } from "../../../hooks/useRandomInterval";
 
-import { assertNever } from "../../utils";
+import { assertNever } from "../../../utils";
 
 const SPEEDS: Record<
   NonNullable<LogProps["speed"]>,

@@ -1,6 +1,6 @@
 import React from "react";
 
-import code from "../assets/file.c?raw";
+import code from "../../assets/file.c?raw";
 
 export const Coder: React.FC = () => {
   const [character, setCharacter] = React.useState(
