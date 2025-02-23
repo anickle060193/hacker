@@ -16,6 +16,7 @@ import { Graph, GraphProps } from "../components/apps/Graph";
 import { Map } from "../components/apps/Map";
 import { Radar } from "../components/apps/Radar";
 import { WireFrame } from "../components/apps/WireFrame";
+import { Console } from "../components/apps/Console";
 
 import { assertNever, keysToArray, sleep } from "../utils";
 import { randomBetween, randomChoice } from "../utils/random";
@@ -30,6 +31,7 @@ import WireFrameIcon from "../assets/wireframe.svg?react";
 import GraphIcon from "../assets/graph.svg?react";
 import DashboardIcon from "../assets/dashboard.svg?react";
 import WindowsIcon from "../assets/windows.svg?react";
+import ConsoleIcon from "../assets/console.svg?react";
 
 const AppIcon = styled("div")({
   width: "3rem",
@@ -71,6 +73,7 @@ interface AppPropsMapping {
   map: Record<string, never>;
   radar: Record<string, never>;
   wireFrame: Record<string, never>;
+  console: Record<string, never>;
 }
 
 type AppType = keyof AppPropsMapping;
@@ -103,6 +106,7 @@ const APP_TYPES = keysToArray<AppType>({
   map: false,
   radar: false,
   wireFrame: false,
+  console: false,
 });
 
 const LOG_SPEEDS = keysToArray<NonNullable<LogProps["speed"]>>({
@@ -170,6 +174,11 @@ function generateApp(appType: AppType): BaseApp {
       props: {},
     };
   } else if (appType === "wireFrame") {
+    return {
+      type: appType,
+      props: {},
+    };
+  } else if (appType === "console") {
     return {
       type: appType,
       props: {},
@@ -336,6 +345,9 @@ export const MainScreen: React.FC = () => {
           <AppIcon onClick={() => addApp(generateApp("wireFrame"))}>
             <WireFrameIcon />
           </AppIcon>
+          <AppIcon onClick={() => addApp(generateApp("console"))}>
+            <ConsoleIcon />
+          </AppIcon>
           <div css={{ flex: 1 }} />
           <AppIcon
             onClick={async () => {
@@ -386,6 +398,8 @@ export const MainScreen: React.FC = () => {
               content = <Radar />;
             } else if (a.type === "wireFrame") {
               content = <WireFrame />;
+            } else if (a.type === "console") {
+              content = <Console />;
             } else {
               assertNever(a);
             }

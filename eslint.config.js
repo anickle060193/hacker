@@ -40,6 +40,7 @@ export default tseslint.config(
     },
     rules: {
       ...reactHooks.configs.recommended.rules,
+      "react/no-unknown-property": ["error", { ignore: ["css"] }],
       "react-refresh/only-export-components": [
         "warn",
         { allowConstantExport: true },
@@ -65,7 +66,7 @@ export default tseslint.config(
           ignoreProperties: true,
         },
       ],
-      "react/no-unknown-property": ["error", { ignore: ["css"] }],
+      "@typescript-eslint/no-unnecessary-type-parameters": "off",
     },
   }
 );
