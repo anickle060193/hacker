@@ -91,7 +91,6 @@ interface AppWindowParams {
 
 type App = AppWindowParams & BaseApp;
 
-const INITIAL_WINDOW_STARTING_Z_INDEX = 0;
 const INITIAL_WINDOW_STARTING_POSITION: DialogWindowPosition = { x: 40, y: 20 };
 const INITIAL_WINDOW_SIZE: DialogWindowSize = { width: 400, height: 300 };
 
@@ -184,26 +183,23 @@ export const MainScreen: React.FC = () => {
   const containerRef = React.useRef<HTMLDivElement | null>(null);
 
   const nextInitialPositionRef = React.useRef(INITIAL_WINDOW_STARTING_POSITION);
-  const nextZIndexRef = React.useRef(INITIAL_WINDOW_STARTING_Z_INDEX);
 
   const [apps, setApps] = React.useState<App[]>([]);
 
   React.useEffect(() => {
     if (apps.length === 0) {
       nextInitialPositionRef.current = INITIAL_WINDOW_STARTING_POSITION;
-      nextZIndexRef.current = INITIAL_WINDOW_STARTING_Z_INDEX;
     }
   }, [apps.length]);
 
   function addApp(baseApp: BaseApp) {
     const { x, y } = nextInitialPositionRef.current;
-    const zIndex = nextZIndexRef.current + 1;
 
     setApps((oldApps) => [
       ...oldApps,
       {
         id: crypto.randomUUID(),
-        zIndex: zIndex,
+        zIndex: Math.max(-1, ...oldApps.map((a) => a.zIndex)) + 1,
         position: { x, y },
         size: INITIAL_WINDOW_SIZE,
         ...baseApp,
@@ -223,7 +219,6 @@ export const MainScreen: React.FC = () => {
     }
 
     nextInitialPositionRef.current = { x: nextX, y: nextY };
-    nextZIndexRef.current += 1;
   }
 
   const updateApp = React.useCallback(
@@ -250,17 +245,25 @@ export const MainScreen: React.FC = () => {
     setApps((oldApps) => oldApps.filter((a) => a.id !== windowId));
   }, []);
 
-  const onWindowFocus = React.useCallback(
-    (windowId: string) => {
-      const zIndex = nextZIndexRef.current;
-      nextZIndexRef.current += 1;
+  const onWindowFocus = React.useCallback((windowId: string) => {
+    setApps((oldApps) => {
+      const newApps = [...oldApps];
 
-      updateApp(windowId, () => ({
-        zIndex,
-      }));
-    },
-    [updateApp]
-  );
+      const index = newApps.findIndex((a) => a.id === windowId);
+      if (index >= 0) {
+        newApps[index] = {
+          ...newApps[index],
+          zIndex:
+            Math.max(
+              -1,
+              ...newApps.filter((a) => a.id !== windowId).map((a) => a.zIndex)
+            ) + 1,
+        };
+      }
+
+      return newApps;
+    });
+  }, []);
 
   const onWindowDrag = React.useCallback(
     (windowId: string, positionDiff: DialogWindowPosition) => {
