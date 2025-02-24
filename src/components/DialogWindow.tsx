@@ -38,39 +38,6 @@ export const DialogWindow: React.FC<Props> = ({
   const [dragging, setDragging] = React.useState(false);
   const [resizing, setResizing] = React.useState(false);
 
-  React.useEffect(() => {
-    if (!(dragging || resizing)) {
-      return;
-    }
-
-    function onMouseMove(e: MouseEvent) {
-      if (dragging) {
-        onWindowDrag(windowId, {
-          x: e.movementX,
-          y: e.movementY,
-        });
-      } else if (resizing) {
-        onWindowResize(windowId, {
-          width: e.movementX,
-          height: e.movementY,
-        });
-      }
-    }
-
-    function onMouseUp() {
-      setDragging(false);
-      setResizing(false);
-    }
-
-    window.addEventListener("mousemove", onMouseMove);
-    window.addEventListener("mouseup", onMouseUp);
-
-    return () => {
-      window.removeEventListener("mousemove", onMouseMove);
-      window.removeEventListener("mouseup", onMouseUp);
-    };
-  }, [windowId, onWindowDrag, onWindowResize, dragging, resizing]);
-
   if (!open) {
     return null;
   }
@@ -93,7 +60,7 @@ export const DialogWindow: React.FC<Props> = ({
         transform: `translate( ${position.x.toFixed()}px, ${position.y.toFixed()}px )`,
         zIndex: zIndex,
       }}
-      onMouseDownCapture={() => {
+      onPointerDownCapture={() => {
         onWindowFocus(windowId);
       }}
     >
@@ -106,15 +73,30 @@ export const DialogWindow: React.FC<Props> = ({
           padding: 4,
           gap: 4,
         }}
-        onMouseDown={(e) => {
+        onPointerDown={(e) => {
           if (e.target !== e.currentTarget || e.button !== 0) {
             return;
           }
 
-          e.preventDefault();
+          e.currentTarget.setPointerCapture(e.pointerId);
 
           setDragging(true);
         }}
+        {...(dragging
+          ? {
+              onPointerUp: () => {
+                setDragging(false);
+              },
+              onPointerMove: (e) => {
+                if (dragging) {
+                  onWindowDrag(windowId, {
+                    x: e.movementX,
+                    y: e.movementY,
+                  });
+                }
+              },
+            }
+          : {})}
         onAuxClick={(e) => {
           if (e.button !== 1) {
             return;
@@ -173,16 +155,31 @@ export const DialogWindow: React.FC<Props> = ({
           cursor: "se-resize",
           opacity: 0,
         }}
-        onMouseDown={(e) => {
+        onPointerDown={(e) => {
           if (e.target !== e.currentTarget) {
             return;
           }
 
-          e.preventDefault();
+          e.currentTarget.setPointerCapture(e.pointerId);
 
           setResizing(true);
         }}
-      ></div>
+        {...(resizing
+          ? {
+              onPointerUp: () => {
+                setResizing(false);
+              },
+              onPointerMove: (e) => {
+                if (resizing) {
+                  onWindowResize(windowId, {
+                    width: e.movementX,
+                    height: e.movementY,
+                  });
+                }
+              },
+            }
+          : {})}
+      />
     </div>
   );
 };
