@@ -2,6 +2,7 @@ import React from "react";
 import { Global } from "@emotion/react";
 import styled from "@emotion/styled";
 import { Link } from "react-router";
+import { v4 as uuidv4 } from "uuid";
 
 import {
   DialogWindow,
@@ -207,7 +208,7 @@ export const MainScreen: React.FC = () => {
     setApps((oldApps) => [
       ...oldApps,
       {
-        id: crypto.randomUUID(),
+        id: uuidv4(),
         zIndex: Math.max(-1, ...oldApps.map((a) => a.zIndex)) + 1,
         position: { x, y },
         size: INITIAL_WINDOW_SIZE,

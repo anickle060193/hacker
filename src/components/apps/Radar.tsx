@@ -1,5 +1,6 @@
 import React from "react";
 import { keyframes } from "@emotion/react";
+import { v4 as uuidv4 } from "uuid";
 
 import { useRandomInterval } from "../../hooks/useRandomInterval";
 
@@ -97,7 +98,7 @@ export const Radar: React.FC = () => {
       {
         x: x,
         y: y,
-        id: crypto.randomUUID(),
+        id: uuidv4(),
       },
     ]);
   });

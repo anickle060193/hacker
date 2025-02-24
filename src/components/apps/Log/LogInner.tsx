@@ -1,5 +1,6 @@
 import React from "react";
 import { faker } from "@faker-js/faker/locale/en";
+import { v4 as uuidv4 } from "uuid";
 
 import { useRandomInterval } from "../../../hooks/useRandomInterval";
 
@@ -27,9 +28,7 @@ const Log: React.FC<LogProps> = ({ speed = "normal", variant = "chat" }) => {
   const [data, setData] = React.useState<Datum[]>([]);
 
   const appendData = React.useCallback((message: string) => {
-    setData((d) =>
-      [...d, { id: crypto.randomUUID(), text: message }].slice(-100)
-    );
+    setData((d) => [...d, { id: uuidv4(), text: message }].slice(-100));
   }, []);
 
   const [min, max] = SPEEDS[speed];

@@ -38,6 +38,55 @@ export const DialogWindow: React.FC<Props> = ({
   const [dragging, setDragging] = React.useState(false);
   const [resizing, setResizing] = React.useState(false);
 
+  const lastPointerScreenCoordsRef = React.useRef<DialogWindowPosition>({
+    x: 0,
+    y: 0,
+  });
+
+  React.useEffect(() => {
+    if (!(dragging || resizing)) {
+      return;
+    }
+
+    function onPointeUp(e: PointerEvent) {
+      if (e.target instanceof HTMLElement) {
+        e.target.releasePointerCapture(e.pointerId);
+      }
+
+      setDragging(false);
+      setResizing(false);
+
+      lastPointerScreenCoordsRef.current = { x: 0, y: 0 };
+    }
+
+    function onPointerMove(e: PointerEvent) {
+      const movementX = e.screenX - lastPointerScreenCoordsRef.current.x;
+      const movementY = e.screenY - lastPointerScreenCoordsRef.current.y;
+
+      if (dragging) {
+        onWindowDrag(windowId, {
+          x: movementX,
+          y: movementY,
+        });
+      } else if (resizing) {
+        onWindowResize(windowId, {
+          width: movementX,
+          height: movementY,
+        });
+      }
+
+      lastPointerScreenCoordsRef.current = { x: e.screenX, y: e.screenY };
+    }
+
+    window.addEventListener("pointerup", onPointeUp);
+    window.addEventListener("pointermove", onPointerMove);
+
+    return () => {
+      window.removeEventListener("pointerup", onPointeUp);
+      window.removeEventListener("pointermove", onPointerMove);
+    };
+  }, [windowId, onWindowDrag, onWindowResize, dragging, resizing]);
+
   if (!open) {
     return null;
   }
@@ -72,6 +121,7 @@ export const DialogWindow: React.FC<Props> = ({
           alignItems: "center",
           padding: 4,
           gap: 4,
+          touchAction: "none",
         }}
         onPointerDown={(e) => {
           if (e.target !== e.currentTarget || e.button !== 0) {
@@ -79,24 +129,9 @@ export const DialogWindow: React.FC<Props> = ({
           }
 
           e.currentTarget.setPointerCapture(e.pointerId);
-
+          lastPointerScreenCoordsRef.current = { x: e.screenX, y: e.screenY };
           setDragging(true);
         }}
-        {...(dragging
-          ? {
-              onPointerUp: () => {
-                setDragging(false);
-              },
-              onPointerMove: (e) => {
-                if (dragging) {
-                  onWindowDrag(windowId, {
-                    x: e.movementX,
-                    y: e.movementY,
-                  });
-                }
-              },
-            }
-          : {})}
         onAuxClick={(e) => {
           if (e.button !== 1) {
             return;
@@ -154,6 +189,7 @@ export const DialogWindow: React.FC<Props> = ({
           height: 6,
           cursor: "se-resize",
           opacity: 0,
+          touchAction: "none",
         }}
         onPointerDown={(e) => {
           if (e.target !== e.currentTarget) {
@@ -161,24 +197,9 @@ export const DialogWindow: React.FC<Props> = ({
           }
 
           e.currentTarget.setPointerCapture(e.pointerId);
-
+          lastPointerScreenCoordsRef.current = { x: e.screenX, y: e.screenY };
           setResizing(true);
         }}
-        {...(resizing
-          ? {
-              onPointerUp: () => {
-                setResizing(false);
-              },
-              onPointerMove: (e) => {
-                if (resizing) {
-                  onWindowResize(windowId, {
-                    width: e.movementX,
-                    height: e.movementY,
-                  });
-                }
-              },
-            }
-          : {})}
       />
     </div>
   );
