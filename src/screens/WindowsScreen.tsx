@@ -128,7 +128,7 @@ const GRAPH_ALGORITHMS = keysToArray<NonNullable<GraphProps["algorithm"]>>({
 
 const GRAPH_VARIANTS = keysToArray<NonNullable<GraphProps["variant"]>>({
   bar: false,
-  pointy: false,
+  line: false,
 });
 
 function generateApp(appType: AppType): BaseApp {

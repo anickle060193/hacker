@@ -43,7 +43,7 @@ export const DashboardScreen: React.FC = () => {
         <Graph variant="bar" algorithm="smooth" />
       </Cell>
       <Cell>
-        <Graph variant="pointy" algorithm="smooth" />
+        <Graph variant="line" algorithm="smooth" />
       </Cell>
 
       <Cell>
@@ -57,7 +57,7 @@ export const DashboardScreen: React.FC = () => {
       </Cell>
 
       <Cell>
-        <Graph variant="pointy" algorithm="sine" count={128} />
+        <Graph variant="line" algorithm="sine" count={128} />
       </Cell>
       <Cell>
         <Graph variant="bar" algorithm="random" />
@@ -76,7 +76,7 @@ export const DashboardScreen: React.FC = () => {
         <Coder />
       </Cell>
       <Cell>
-        <Graph variant="pointy" algorithm="random" />
+        <Graph variant="line" algorithm="random" />
       </Cell>
 
       <Cell>

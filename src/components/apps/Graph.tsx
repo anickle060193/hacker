@@ -7,7 +7,7 @@ import { assertNever } from "../../utils";
 
 export interface GraphProps {
   count?: number;
-  variant?: "bar" | "pointy";
+  variant?: "bar" | "line";
   algorithm?: "random" | "smooth" | "sine";
 }
 
@@ -107,7 +107,7 @@ export const Graph: React.FC<GraphProps> = ({
         ))}
       </div>
     );
-  } else if (variant === "pointy") {
+  } else if (variant === "line") {
     const path = heights
       .map(
         (h, i) =>
