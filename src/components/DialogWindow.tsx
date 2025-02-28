@@ -1,4 +1,32 @@
 import React from "react";
+import styled from "@emotion/styled";
+
+import {
+  ContextMenu,
+  ContextMenuItem,
+  ContextMenuPosition,
+} from "./ContextMenu";
+
+import MenuIcon from "../assets/menu.svg?react";
+
+const DialogWindowButton = styled("button")({
+  appearance: "none",
+  width: "1rem",
+  height: "1rem",
+  border: "1px solid var( --primary-color )",
+  background: "var( --background-color )",
+  stroke: "var( --primary-color )",
+  fill: "var( --primary-color )",
+  padding: 0,
+  "&:hover": {
+    stroke: "var( --background-color )",
+    fill: "var( --background-color )",
+    background: "var( --primary-color )",
+  },
+  "&:active": {
+    opacity: 0.5,
+  },
+});
 
 export interface DialogWindowPosition {
   readonly x: number;
@@ -16,6 +44,7 @@ interface Props {
   zIndex: number;
   size: DialogWindowSize;
   position: DialogWindowPosition;
+  contextMenu: ContextMenuItem | ContextMenuItem[];
   onClose: (windowId: string) => void;
   onWindowFocus: (windowId: string) => void;
   onWindowDrag: (windowId: string, diff: DialogWindowPosition) => void;
@@ -29,6 +58,7 @@ export const DialogWindow: React.FC<Props> = ({
   zIndex,
   size,
   position,
+  contextMenu,
   onClose,
   onWindowFocus,
   onWindowDrag,
@@ -42,6 +72,9 @@ export const DialogWindow: React.FC<Props> = ({
     x: 0,
     y: 0,
   });
+
+  const [windowContextMenuPosition, setWindowContextMenuPosition] =
+    React.useState<ContextMenuPosition | null>(null);
 
   React.useEffect(() => {
     if (!(dragging || resizing)) {
@@ -92,115 +125,119 @@ export const DialogWindow: React.FC<Props> = ({
   }
 
   return (
-    <div
-      css={{
-        position: "absolute",
-        top: 0,
-        left: 0,
-        border: "1px solid var( --primary-color )",
-        outline: "3px solid black",
-        backgroundColor: "var( --background-color )",
-        display: "flex",
-        flexDirection: "column",
-      }}
-      style={{
-        width: Math.max(100, size.width),
-        height: Math.max(100, size.height),
-        transform: `translate( ${position.x.toFixed()}px, ${position.y.toFixed()}px )`,
-        zIndex: zIndex,
-      }}
-      onPointerDownCapture={() => {
-        onWindowFocus(windowId);
-      }}
-    >
-      <div
-        css={{
-          borderBottom: "1px solid var( --primary-color )",
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          padding: 4,
-          gap: 4,
-          touchAction: "none",
-        }}
-        onPointerDown={(e) => {
-          if (e.target !== e.currentTarget || e.button !== 0) {
-            return;
-          }
-
-          e.currentTarget.setPointerCapture(e.pointerId);
-          lastPointerScreenCoordsRef.current = { x: e.screenX, y: e.screenY };
-          setDragging(true);
-        }}
-        onAuxClick={(e) => {
-          if (e.button !== 1) {
-            return;
-          }
-
-          onClose(windowId);
-        }}
-      >
-        <div css={{ flex: 1 }} />
-        <button
-          css={{
-            appearance: "none",
-            width: "1rem",
-            height: "1rem",
-            border: "1px solid var( --primary-color )",
-            background: "var( --background-color )",
-            stroke: "var( --primary-color )",
-            padding: 0,
-            "&:hover": {
-              stroke: "var( --background-color )",
-              background: "var( --primary-color )",
-            },
-            "&:active": {
-              opacity: 0.5,
-            },
-          }}
-          onClick={() => onClose(windowId)}
-        >
-          <svg
-            viewBox="0 0 20 20"
-            css={{
-              width: "100%",
-              height: "100%",
-              strokeWidth: 2,
-            }}
-          >
-            <path d="M4,4 L16,16 M16,4 L4,16 z" />
-          </svg>
-        </button>
-      </div>
-      <div
-        css={{
-          flex: 1,
-          overflow: "hidden",
-        }}
-      >
-        {children}
-      </div>
+    <>
       <div
         css={{
           position: "absolute",
-          bottom: 0,
-          right: 0,
-          width: 6,
-          height: 6,
-          cursor: "se-resize",
-          opacity: 0,
-          touchAction: "none",
+          top: 0,
+          left: 0,
+          border: "1px solid var( --primary-color )",
+          outline: "3px solid black",
+          backgroundColor: "var( --background-color )",
+          display: "flex",
+          flexDirection: "column",
         }}
-        onPointerDown={(e) => {
-          if (e.target !== e.currentTarget) {
-            return;
-          }
+        style={{
+          width: Math.max(100, size.width),
+          height: Math.max(100, size.height),
+          transform: `translate( ${position.x.toFixed()}px, ${position.y.toFixed()}px )`,
+          zIndex: zIndex,
+        }}
+        onPointerDownCapture={() => {
+          onWindowFocus(windowId);
+        }}
+        onContextMenu={(e) => {
+          e.preventDefault();
 
-          e.currentTarget.setPointerCapture(e.pointerId);
-          lastPointerScreenCoordsRef.current = { x: e.screenX, y: e.screenY };
-          setResizing(true);
+          setWindowContextMenuPosition({ left: e.clientX, top: e.clientY });
         }}
-      />
-    </div>
+      >
+        <div
+          css={{
+            borderBottom: "1px solid var( --primary-color )",
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            padding: 4,
+            gap: 4,
+            touchAction: "none",
+          }}
+          onPointerDown={(e) => {
+            if (e.target !== e.currentTarget || e.button !== 0) {
+              return;
+            }
+
+            e.currentTarget.setPointerCapture(e.pointerId);
+            lastPointerScreenCoordsRef.current = { x: e.screenX, y: e.screenY };
+            setDragging(true);
+          }}
+          onAuxClick={(e) => {
+            if (e.button !== 1) {
+              return;
+            }
+
+            onClose(windowId);
+          }}
+        >
+          <div css={{ flex: 1 }} />
+          <DialogWindowButton
+            onClick={(e) =>
+              setWindowContextMenuPosition({ left: e.clientX, top: e.clientY })
+            }
+          >
+            <MenuIcon />
+          </DialogWindowButton>
+          <DialogWindowButton onClick={() => onClose(windowId)}>
+            <svg
+              viewBox="0 0 20 20"
+              css={{
+                width: "100%",
+                height: "100%",
+                strokeWidth: 2,
+              }}
+            >
+              <path d="M4,4 L16,16 M16,4 L4,16 z" />
+            </svg>
+          </DialogWindowButton>
+        </div>
+        <div
+          css={{
+            flex: 1,
+            overflow: "hidden",
+          }}
+        >
+          {children}
+        </div>
+        <div
+          css={{
+            position: "absolute",
+            bottom: 0,
+            right: 0,
+            width: 6,
+            height: 6,
+            cursor: "se-resize",
+            opacity: 0,
+            touchAction: "none",
+          }}
+          onPointerDown={(e) => {
+            if (e.target !== e.currentTarget) {
+              return;
+            }
+
+            e.currentTarget.setPointerCapture(e.pointerId);
+            lastPointerScreenCoordsRef.current = { x: e.screenX, y: e.screenY };
+            setResizing(true);
+          }}
+        />
+      </div>
+      {windowContextMenuPosition && (
+        <ContextMenu
+          position={windowContextMenuPosition}
+          onClose={() => setWindowContextMenuPosition(null)}
+        >
+          {contextMenu}
+        </ContextMenu>
+      )}
+    </>
   );
 };

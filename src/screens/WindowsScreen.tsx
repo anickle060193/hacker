@@ -33,6 +33,7 @@ import GraphIcon from "../assets/graph.svg?react";
 import DashboardIcon from "../assets/dashboard.svg?react";
 import WindowsIcon from "../assets/windows.svg?react";
 import ConsoleIcon from "../assets/console.svg?react";
+import { ContextMenuItem } from "../components/ContextMenu";
 
 const AppIcon = styled("div")({
   width: "3rem",
@@ -313,6 +314,14 @@ export const WindowsScreen: React.FC = () => {
     [updateApp]
   );
 
+  function onCloseOthers(windowId: string) {
+    setApps((oldApps) => oldApps.filter((a) => a.id === windowId));
+  }
+
+  function onCloseAll() {
+    setApps([]);
+  }
+
   return (
     <>
       {globalStyles}
@@ -393,6 +402,7 @@ export const WindowsScreen: React.FC = () => {
             flex: 1,
             position: "relative",
             overflow: "hidden",
+            zIndex: 0,
           }}
         >
           {apps.map((a) => {
@@ -431,6 +441,19 @@ export const WindowsScreen: React.FC = () => {
                 onWindowFocus={onWindowFocus}
                 onWindowDrag={onWindowDrag}
                 onWindowResize={onWindowResize}
+                contextMenu={
+                  <>
+                    <ContextMenuItem
+                      label="Close"
+                      onClick={() => onWindowClose(a.id)}
+                    />
+                    <ContextMenuItem
+                      label="Close Others"
+                      onClick={() => onCloseOthers(a.id)}
+                    />
+                    <ContextMenuItem label="Close All" onClick={onCloseAll} />
+                  </>
+                }
               >
                 {content}
               </DialogWindow>
