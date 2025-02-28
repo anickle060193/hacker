@@ -53,25 +53,19 @@ const Log: React.FC<LogProps> = ({ speed = "normal", variant = "chat" }) => {
         width: "100%",
         height: "100%",
         fontSize: "0.5em",
-        position: "relative",
         overflow: "hidden",
+        color: "var( --primary-color )",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "flex-end",
+        overflowAnchor: "none",
       }}
     >
-      <div
-        css={{
-          position: "absolute",
-          bottom: 0,
-          left: 0,
-          right: 0,
-          color: "var( --primary-color )",
-        }}
-      >
-        {data.map((d) => (
-          <div key={d.id} css={{ whiteSpace: "nowrap" }}>
-            {d.text}
-          </div>
-        ))}
-      </div>
+      {data.map((d) => (
+        <div key={d.id} css={{ whiteSpace: "nowrap" }}>
+          {d.text}
+        </div>
+      ))}
     </div>
   );
 };
