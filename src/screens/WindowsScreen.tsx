@@ -189,7 +189,7 @@ function generateApp(appType: AppType): BaseApp {
   }
 }
 
-export const MainScreen: React.FC = () => {
+export const WindowsScreen: React.FC = () => {
   const containerRef = React.useRef<HTMLDivElement | null>(null);
 
   const nextInitialPositionRef = React.useRef(INITIAL_WINDOW_STARTING_POSITION);
