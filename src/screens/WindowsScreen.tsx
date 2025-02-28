@@ -190,7 +190,7 @@ function generateApp(appType: AppType): BaseApp {
 }
 
 export const WindowsScreen: React.FC = () => {
-  const containerRef = React.useRef<HTMLDivElement | null>(null);
+  const windowsAreaRef = React.useRef<HTMLDivElement | null>(null);
 
   const nextInitialPositionRef = React.useRef(INITIAL_WINDOW_STARTING_POSITION);
 
@@ -203,7 +203,33 @@ export const WindowsScreen: React.FC = () => {
   }, [apps.length]);
 
   function addApp(baseApp: BaseApp) {
-    const { x, y } = nextInitialPositionRef.current;
+    let { x, y } = nextInitialPositionRef.current;
+
+    let { width, height } = INITIAL_WINDOW_SIZE;
+
+    if (windowsAreaRef.current) {
+      const maxWidth =
+        windowsAreaRef.current.clientWidth -
+        INITIAL_WINDOW_STARTING_POSITION.x * 2;
+      if (width > maxWidth) {
+        width = maxWidth;
+      }
+
+      const maxHeight =
+        windowsAreaRef.current.clientHeight -
+        INITIAL_WINDOW_STARTING_POSITION.y * 2;
+      if (height > maxHeight) {
+        height = maxHeight;
+      }
+
+      if (x + width > windowsAreaRef.current.clientWidth) {
+        x = INITIAL_WINDOW_STARTING_POSITION.x;
+      }
+
+      if (y + height > windowsAreaRef.current.clientHeight) {
+        y = INITIAL_WINDOW_STARTING_POSITION.y;
+      }
+    }
 
     setApps((oldApps) => [
       ...oldApps,
@@ -211,24 +237,12 @@ export const WindowsScreen: React.FC = () => {
         id: uuidv4(),
         zIndex: Math.max(-1, ...oldApps.map((a) => a.zIndex)) + 1,
         position: { x, y },
-        size: INITIAL_WINDOW_SIZE,
+        size: { width, height },
         ...baseApp,
       },
     ]);
 
-    let nextX = x;
-    let nextY = y;
-
-    nextX += 40;
-    nextY += 40;
-
-    if (containerRef.current) {
-      if (nextY >= containerRef.current.clientHeight * 0.5) {
-        nextY = INITIAL_WINDOW_STARTING_POSITION.y;
-      }
-    }
-
-    nextInitialPositionRef.current = { x: nextX, y: nextY };
+    nextInitialPositionRef.current = { x: x + 40, y: y + 40 };
   }
 
   const updateApp = React.useCallback(
@@ -303,7 +317,6 @@ export const WindowsScreen: React.FC = () => {
     <>
       {globalStyles}
       <div
-        ref={containerRef}
         css={{
           width: "100%",
           height: "100%",
@@ -375,10 +388,11 @@ export const WindowsScreen: React.FC = () => {
           </Link>
         </div>
         <div
+          ref={windowsAreaRef}
           css={{
             flex: 1,
             position: "relative",
-            overflow: "clip",
+            overflow: "hidden",
           }}
         >
           {apps.map((a) => {
