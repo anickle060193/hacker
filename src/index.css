@@ -26,31 +26,31 @@ body {
 
 @keyframes primary-color-cycle {
   0% {
-    --primary-color: #ff1493;
+    --primary-color: hsl(0, 100%, 50%);
   }
   12.5% {
-    --primary-color: #ff0000;
+    --primary-color: hsl(45, 100%, 50%);
   }
   25% {
-    --primary-color: #ffa500;
+    --primary-color: hsl(90, 100%, 50%);
   }
   37.5% {
-    --primary-color: #ffff00;
+    --primary-color: hsl(135, 100%, 50%);
   }
   50% {
-    --primary-color: #7fff00;
+    --primary-color: hsl(180, 100%, 50%);
   }
   62.5% {
-    --primary-color: #00ffff;
+    --primary-color: hsl(225, 100%, 50%);
   }
   75% {
-    --primary-color: #0000ff;
+    --primary-color: hsl(270, 100%, 50%);
   }
   87.5% {
-    --primary-color: #9932cc;
+    --primary-color: hsl(315, 100%, 50%);
   }
   100% {
-    --primary-color: #ff1493;
+    --primary-color: hsl(360, 100%, 50%);
   }
 }
 
